@@ -1,60 +1,213 @@
-import Image from "next/image";
-import ProfileForm from "../components/profile-page/profile-form";
-import ChangePasswordForm from "../components/profile-page/change-password-form";
+"use client"
 
-const Profile = () => {
+import type React from "react"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent } from "@/components/ui/card"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+
+interface ProfileData {
+  fullName: string
+  email: string
+  phone: string
+  about: string
+  country: string
+  location: string
+}
+
+export default function Page() {
+  const [profile, setProfile] = useState<ProfileData>({
+    fullName: "Doe",
+    email: "doe@gmail.com",
+    phone: "+231 456 444 566",
+    about: "",
+    country: "Canada",
+    location: "19th dema street, Canada",
+  })
+
+  const [passwords, setPasswords] = useState({
+    current: "",
+    new: "",
+    repeat: "",
+  })
+
+  const handleProfileUpdate = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle profile update logic here
+    console.log("Profile updated:", profile)
+  }
+
+  const handlePasswordChange = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle password change logic here
+    console.log("Password changed:", passwords)
+  }
+
   return (
-    <>
-      <h1 className="mb-4 hidden text-3xl font-bold text-gray-800 md:block">
-        Profile
-      </h1>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="grid gap-6 lg:grid-cols-[350px,1fr]">
+        {/* Profile Card */}
+        <div className="space-y-6">
+          <Card className="border-blue-500">
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center space-y-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarFallback className="text-lg">Doe</AvatarFallback>
+                </Avatar>
+                <div className="text-center">
+                  <div className="font-semibold">{profile.fullName}</div>
+                  <div className="text-sm text-gray-500">Admin</div>
+                </div>
+              </div>
+              <div className="mt-6 space-y-4">
+                <div className="space-y-1">
+                  <div className="text-xs text-gray-500">COUNTRY:</div>
+                  <div className="text-sm">{profile.country}</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-xs text-gray-500">LOCATION:</div>
+                  <div className="text-sm">{profile.location}</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-xs text-gray-500">PHONE NUMBER:</div>
+                  <div className="text-sm">{profile.phone}</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-xs text-gray-500">EMAIL ADDRESS:</div>
+                  <div className="text-sm">{profile.email}</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-      <div className="flex flex-col items-start gap-4 sm:flex-row">
-        <div className="w-full flex-[2] rounded-xl bg-white p-4 text-sm shadow-sm">
-          <p className="mb-4 text-base font-medium">Profile</p>
-
-          <div className="mb-4 flex items-center gap-2">
-            <Image
-              src="https://utfs.io/f/wLDjZbdcJHpRMWIl9NP3i48NTabVkLgSlduGEY15BDA9eZjR"
-              alt="John Doe"
-              height={48}
-              width={48}
-              className="h-12 w-12 rounded-full"
-            />
-            <div>
-              <p>John Doe</p>
-              <p className="text-xs text-gray-400">Vendor</p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between gap-4 border-b py-3">
-            <span>COUNTRY</span>
-            <span className="text-right">Canada</span>
-          </div>
-          <div className="flex items-center justify-between gap-4 border-b py-3">
-            <span>LOCATION</span>
-            <span className="text-right">19th dema street, Canada</span>
-          </div>
-          <div className="flex items-center justify-between gap-4 border-b py-3">
-            <span>PHONE NUMBER</span>
-            <span className="text-right">+231 456 444 566</span>
-          </div>
-          <div className="flex items-center justify-between gap-4 pt-3">
-            <span>EMAIL ADDRESS</span>
-            <span className="text-right">doe@gmail.com</span>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold">Login History</h3>
+                <Button variant="secondary" className="bg-purple-100 text-purple-700 hover:bg-purple-200">
+                  All Logout
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="w-full flex-[3] rounded-xl bg-white p-4 shadow-sm">
-          <p className="mb-4 font-medium">Edit profile</p>
-          <ProfileForm />
+        {/* Edit Forms */}
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="p-6">
+              <form onSubmit={handleProfileUpdate} className="space-y-6">
+                <h2 className="text-xl font-semibold">Edit Profile</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm" htmlFor="fullName">
+                      Full Name
+                    </label>
+                    <Input
+                      id="fullName"
+                      value={profile.fullName}
+                      onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
+                    />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-sm" htmlFor="email">
+                        Email
+                      </label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={profile.email}
+                        onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm" htmlFor="phone">
+                        Phone Number
+                      </label>
+                      <Input
+                        id="phone"
+                        value={profile.phone}
+                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm" htmlFor="about">
+                      About me
+                    </label>
+                    <Textarea
+                      id="about"
+                      value={profile.about}
+                      onChange={(e) => setProfile({ ...profile, about: e.target.value })}
+                      rows={4}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button type="submit" className="bg-[#FF7A45] hover:bg-[#FF7A45]/90">
+                    update profile
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
 
-          <p className="mb-4 mt-8 font-medium">Change password</p>
-          <ChangePasswordForm />
+          <Card>
+            <CardContent className="p-6">
+              <form onSubmit={handlePasswordChange} className="space-y-6">
+                <h2 className="text-xl font-semibold">Change Password</h2>
+                <div className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-sm" htmlFor="currentPassword">
+                        Current password
+                      </label>
+                      <Input
+                        id="currentPassword"
+                        type="password"
+                        value={passwords.current}
+                        onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm" htmlFor="newPassword">
+                        New password
+                      </label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={passwords.new}
+                        onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm" htmlFor="repeatPassword">
+                      Repeat new password
+                    </label>
+                    <Input
+                      id="repeatPassword"
+                      type="password"
+                      value={passwords.repeat}
+                      onChange={(e) => setPasswords({ ...passwords, repeat: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button type="submit" className="bg-[#FF7A45] hover:bg-[#FF7A45]/90">
+                    change
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
-    </>
-  );
-};
+    </div>
+  )
+}
 
-export default Profile;

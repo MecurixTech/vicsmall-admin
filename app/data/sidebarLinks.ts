@@ -6,7 +6,11 @@ import {
   ShoppingBagOutlined,
   Storefront,
   SupervisorAccount,
+  LocalShipping,
+  Reviews,
+  Wallet,
 } from "@mui/icons-material";
+
 
 export const sidebarLinks = [
   {
@@ -36,8 +40,26 @@ export const sidebarLinks = [
   {
     id: 5,
     label: "Admins",
-    href: "/admins",
+    href: "/admin",
     icon: SupervisorAccount,
+  },
+  {
+    id: 6,
+    label: "Shipping",
+    href: "/shipping-zone",
+    icon: LocalShipping,
+  },
+  {
+    id: 7,
+    label: "Reviews",
+    href: "/reviews",
+    icon:   Reviews,
+  },
+  {
+    id: 8,
+    label: "Payment Method",
+    href: "/payment-method",
+    icon:   Wallet,
   },
   {
     id: 4,
