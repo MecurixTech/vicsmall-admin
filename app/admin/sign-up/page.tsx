@@ -1,114 +1,133 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {Person, Visibility, VisibilityOff} from '@mui/icons-material';
-import Link from "next/link"
+import { Admin } from "@/app/data/dummyTypes";
+import createAdmin from "@/app/lib/actions/createAdmin";
+import { Formik, Form, Field } from "formik";
+import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 
-export default function Page() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+const AdminSignUp = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [initialValues, setInitialValues] = useState<Admin>({
+    email: "",
+    full_name: "",
+    country_code: "+234",
+    phone_number: "",
+    password: "",
+    confirm_password: "",
+    is_manager: true,
+    is_active: true,
+    is_deleted: true,
+  });
+
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = async (values: Admin) => {
+    // Handle form submission
+    console.log("Form submitted", values);
+    setIsLoading(true);
+    const response = await createAdmin(values);
+    console.log(response);
+    setIsLoading(false);
+    if (!response.Success) {
+      toast.error(response.Message || "Failed to create admin");
+      return;
+    }
+    toast.success(response.Message || "Admin created successfully");
+    formRef.current?.reset();
+  };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-semibold">
-          Sign up! <span className="text-purple-700">New Admin</span>
-        </h1>
-      </div>
-
-      <form className="space-y-4">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm mb-1">
-              Email <span className="text-red-500">*</span>
+    <>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Form ref={formRef} className="mx-auto sm:w-3/5">
+          <h1 className="mb-4 text-3xl">Admin Sign Up</h1>
+          <div className="mb-4">
+            <label className="mb-2" htmlFor="email">
+              Email
             </label>
-            <div className="relative">
-              <Input className="pl-10" placeholder="Place holder" type="email" required />
-              <div className="absolute left-3 absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
-                <Person className="h-5 w-5 " />
-              </div>
-            </div>
+            <Field
+              name="email"
+              id="email"
+              type="text"
+              className="w-full border border-gray-200 bg-white"
+              required
+            />
           </div>
-
-          <div>
-            <label className="block text-sm mb-1">
-              Full Name <span className="text-red-500">*</span>
+          <div className="mb-4">
+            <label className="mb-2" htmlFor="full_name">
+              Full Name
             </label>
-            <div className="relative">
-              <Input className="pl-10" placeholder="Place holder" type="text" required />
-              <div className="absolute left-3 absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
-                <Person className="h-5 w-5" />
-              </div>
-            </div>
+            <Field
+              name="full_name"
+              id="full_name"
+              type="text"
+              className="w-full border border-gray-200 bg-white"
+              required
+            />
           </div>
-
-          <div className="grid grid-cols-[140px,1fr] gap-4">
-            <div>
-              <label className="block text-sm mb-1">
-                Country Code <span className="text-red-500">*</span>
+          <div className="flex gap-4">
+            <div className="mb-4 flex-1">
+              <label className="mb-2" htmlFor="country_code">
+                Country Code
               </label>
-              <div className="relative">
-                <select
-                  className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background text-sm"
-                  defaultValue="234"
-                >
-                  <option value="234">🇳🇬 +234</option>
-                  {/* Add more country codes as needed */}
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm mb-1">Phone Number</label>
-              <Input placeholder="Place holder" type="tel" />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm mb-1">
-              Password <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <Input className="pr-10" type={showPassword ? "text" : "password"} placeholder="Password" required />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600"
-              >
-                {showPassword ? <VisibilityOff className="h-5 w-5" /> : <Visibility className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm mb-1">
-              Confirm Password <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <Input
-                className="pr-10"
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Password"
+              <Field
+                name="country_code"
+                id="country_code"
+                type="text"
+                className="w-full border border-gray-200 bg-white"
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600"
-              >
-                {showConfirmPassword ? <VisibilityOff className="h-5 w-5" /> : <Visibility className="h-5 w-5" />}
-              </button>
+            </div>
+            <div className="mb-4 flex-[5]">
+              <label className="mb-2" htmlFor="phone_number">
+                Phone Number
+              </label>
+              <Field
+                name="phone_number"
+                id="phone_number"
+                type="text"
+                className="w-full border border-gray-200 bg-white"
+                required
+              />
             </div>
           </div>
-        </div>
+          <div className="mb-4">
+            <label className="mb-2" htmlFor="password">
+              Password
+            </label>
+            <Field
+              name="password"
+              id="password"
+              type="password"
+              className="w-full border border-gray-200 bg-white"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="mb-2" htmlFor="confirm_password">
+              Confirm Password
+            </label>
+            <Field
+              name="confirm_password"
+              id="confirm_password"
+              type="password"
+              className="w-full border border-gray-200 bg-white"
+              required
+            />
+          </div>
 
- <Link href="/welcome">
-        <Button className="w-full bg-[#F37F34] hover:bg-[#F37F34]/90 text-white mt-6" size="lg">
-          Sign up
-        </Button></Link>
-      </form>
-    </div>
-  )
-}
+          <button
+            type="submit"
+            className="button button-accent w-full py-3"
+            disabled={isLoading}
+          >
+            {isLoading ? "Submitting..." : "Sign up"}
+          </button>
+        </Form>
+      </Formik>
+    </>
+  );
+};
 
+export default AdminSignUp;

@@ -45,6 +45,10 @@ tr {
   @apply border-b;
 }
 
+button:disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
