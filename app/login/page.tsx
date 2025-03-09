@@ -1,25 +1,62 @@
-import Image from 'next/image';
-import React from 'react';
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+import login from "../lib/actions/login";
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 const LoginPage: React.FC = () => {
+  const [auth, setAuth] = useState(
+    JSON.parse(localStorage.getItem("auth") || "{}"),
+  );
+
+  if (auth.access) {
+    redirect("/");
+  }
+
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+
+  interface FormData {
+    email: string;
+    password: string;
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const response = await login(formData);
+    if (response) {
+      setIsLoading(false);
+      if (response.Success) {
+        localStorage.setItem("auth", JSON.stringify(response.Data));
+        toast.success(response.Message);
+        window.location.reload();
+      } else {
+        toast.error(response.Message);
+      }
+    }
+    console.log(response);
+  };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-     
-      <div className="w-[656px] h-[589px] bg-white rounded-2xl shadow-lg relative">
-      
+    <form
+      onSubmit={(e) => handleSubmit(e)}
+      className="flex min-h-screen items-center justify-center bg-gray-100"
+    >
+      <div className="relative h-[589px] w-[656px] rounded-2xl bg-white shadow-lg">
         <div className="absolute left-[241px] top-[101px] text-center">
           <h1 className="text-2xl font-medium text-gray-900">Welcome back!</h1>
         </div>
 
-      
         <div className="absolute left-[87px] top-[202px]">
-          <label className="text-sm font-medium text-gray-600">Email or Phone Number</label>
+          <label className="text-sm font-medium text-gray-600">Email</label>
         </div>
 
-        <div className="absolute left-[86px] top-[224px] w-[485px] h-[45px]">
-          <div className="flex items-center bg-gray-50 border border-gray-300 rounded-lg p-2">
+        <div className="absolute left-[86px] top-[224px] h-[45px] w-[485px]">
+          <div className="flex items-center rounded-lg border border-gray-300 bg-gray-50 p-2">
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="h-6 w-6 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -33,28 +70,33 @@ const LoginPage: React.FC = () => {
               />
             </svg>
             <input
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               type="text"
-              placeholder="Enter your email or phone number"
-              className="ml-2 bg-transparent outline-none w-full text-sm text-gray-600 placeholder-gray-400"
+              placeholder="Enter your email"
+              className="ml-2 w-full bg-transparent text-sm text-gray-600 placeholder-gray-400 outline-none"
             />
           </div>
         </div>
 
-     
         <div className="absolute left-[87px] top-[296px]">
           <label className="text-sm font-medium text-gray-600">Password</label>
         </div>
 
-        <div className="absolute left-[86px] top-[318px] w-[485px] h-[45px]">
-          <div className="flex items-center bg-gray-50 border border-gray-300 rounded-lg p-2">
+        <div className="absolute left-[86px] top-[318px] h-[45px] w-[485px]">
+          <div className="flex items-center rounded-lg border border-gray-300 bg-gray-50 p-2">
             <input
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               type="password"
               placeholder="Enter your password"
-              className="bg-transparent outline-none w-full text-sm text-gray-600 placeholder-gray-400"
+              className="w-full bg-transparent text-sm text-gray-600 placeholder-gray-400 outline-none"
             />
             <button>
               <svg
-                className="w-6 h-6 text-gray-400"
+                className="h-6 w-6 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -71,28 +113,34 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="absolute left-[86px] top-[447px] w-[485px] h-[50px]">
-          <button className="w-full h-full bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300">
-            Login
+        <div className="absolute left-[86px] top-[447px] h-[50px] w-[485px]">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="h-full w-full rounded-lg bg-accent-900 font-semibold text-white transition duration-300 hover:bg-orange-600 disabled:opacity-30"
+          >
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </div>
         <div className="absolute left-[473px] top-[367px]">
-          <a href="#" className="text-sm font-semibold text-gray-600 hover:text-gray-800">
+          <a
+            href="#"
+            className="text-sm font-semibold text-gray-600 hover:text-gray-800"
+          >
             Forgot password?
           </a>
         </div>
 
-
         <div className="absolute left-[299px] top-[25px]">
-        <Image
-        src="/vicsmall-logo.svg"
-        alt="Vicsmall logo"
-        height={48}
-        width={48}
-      />
+          <Image
+            src="/vicsmall-logo.svg"
+            alt="Vicsmall logo"
+            height={48}
+            width={48}
+          />
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

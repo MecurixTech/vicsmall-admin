@@ -1,8 +1,15 @@
+"use client";
+
 import { NotificationsOutlined, SearchOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [auth, setAuth] = useState(
+    JSON.parse(localStorage.getItem("auth") || "{}"),
+  );
+
   return (
     <nav className="mb-8 flex items-center justify-between bg-white px-8 py-2">
       <Image
@@ -44,19 +51,30 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <Link
-          href="profile"
-          className="flex items-center gap-2 rounded-full border border-accent-900 bg-accent-100 p-1 text-gray-800 sm:pr-4"
-        >
-          <Image
-            src="https://utfs.io/f/wLDjZbdcJHpRMWIl9NP3i48NTabVkLgSlduGEY15BDA9eZjR"
-            alt="Favour Udoh"
-            height={32}
-            width={32}
-            className="h-8 w-8 rounded-full"
-          />
-          <span className="hidden text-xs sm:block">Favour Udoh</span>
-        </Link>
+        {auth.access ? (
+          <Link
+            href="profile"
+            className="flex items-center gap-2 rounded-full border border-accent-900 bg-accent-100 p-1 text-gray-800 sm:pr-4"
+          >
+            <Image
+              src="https://utfs.io/f/wLDjZbdcJHpRMWIl9NP3i48NTabVkLgSlduGEY15BDA9eZjR"
+              alt="Favour Udoh"
+              height={32}
+              width={32}
+              className="h-8 w-8 rounded-full"
+            />
+            <span className="hidden text-xs sm:block">
+              {auth.user.full_name}
+            </span>
+          </Link>
+        ) : (
+          <Link
+            href="/login"
+            className="rounded-lg bg-accent-900 px-4 py-2 font-medium text-white"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
