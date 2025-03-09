@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
 
 import "./globals.css";
+import Sidebar from "./components/sidebar";
+import Tabs from "./components/tabs";
+import Navbar from "./components/navbar";
+import Footer from "./components/footer";
+import { Toaster } from "react-hot-toast";
 
 const ubuntu = Ubuntu({
   subsets: ["latin"],
@@ -20,7 +25,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={ubuntu.className}>{children}</body>
+      <body className={ubuntu.className}>
+        <Toaster />
+        <Navbar />
+        <div className="px-4">
+          <div className="flex flex-col items-start gap-6 md:flex-row">
+            <Sidebar />
+            <Tabs />
+            <div className="w-full flex-[11]">{children}</div>
+          </div>
+        </div>
+        <Footer />
+      </body>
     </html>
   );
 }
