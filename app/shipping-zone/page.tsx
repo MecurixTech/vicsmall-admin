@@ -30,7 +30,7 @@ type ShippingZone = {
   updated_at: Date;
 };
 
-export default function page() {
+export default function Page() {
   const [shippingZones, setShippingZones] = useState([]);
 
   useEffect(() => {
@@ -55,6 +55,7 @@ export default function page() {
         }
       })
       .catch((error) => {
+        console.log(error);
         toast.error("An error occurred!");
       });
   }, []);

@@ -7,9 +7,7 @@ import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 
 const LoginPage: React.FC = () => {
-  const [auth, setAuth] = useState(
-    JSON.parse(localStorage.getItem("auth") || "{}"),
-  );
+  const auth = JSON.parse(localStorage.getItem("auth") || "{}");
 
   if (auth.access) {
     redirect("/");
@@ -17,11 +15,6 @@ const LoginPage: React.FC = () => {
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-
-  interface FormData {
-    email: string;
-    password: string;
-  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

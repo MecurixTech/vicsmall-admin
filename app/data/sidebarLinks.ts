@@ -1,7 +1,6 @@
 import {
   DashboardOutlined,
   Inventory2Outlined,
-  LogoutOutlined,
   PersonOutlined,
   ShoppingBagOutlined,
   Storefront,

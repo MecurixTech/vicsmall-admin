@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const AdminSignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [initialValues, setInitialValues] = useState<Admin>({
+  const initialValues = {
     email: "",
     full_name: "",
     country_code: "+234",
@@ -18,7 +18,7 @@ const AdminSignUp = () => {
     is_manager: true,
     is_active: true,
     is_deleted: true,
-  });
+  };
 
   const formRef = useRef<HTMLFormElement>(null);
 

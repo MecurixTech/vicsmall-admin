@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Admin } from "../data/dummyTypes";
 
 const activities = [
   "John Doe accepted a Request",
@@ -21,20 +22,7 @@ const activities = [
   "John Doe Deactivated an account",
 ];
 
-type Admin = {
-  id: string;
-  email: string;
-  full_name: string;
-  country_code: string;
-  phone_number: string;
-  password: string;
-  confirm_password: string;
-  is_manager: boolean;
-  is_active: boolean;
-  is_deleted: boolean;
-};
-
-export default function page() {
+export default function Page() {
   const [admins, setAdmins] = useState([]);
 
   useEffect(() => {

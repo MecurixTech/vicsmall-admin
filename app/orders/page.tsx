@@ -27,22 +27,8 @@ export default function OrdersPage() {
     canceled: false,
   });
 
-  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-
   const handleFilterChange = (filter: keyof typeof filters) => {
     setFilters((prev) => ({ ...prev, [filter]: !prev[filter] }));
-  };
-
-  const handleOrderSelection = (orderId: string) => {
-    setSelectedOrders((prev) =>
-      prev.includes(orderId)
-        ? prev.filter((id) => id !== orderId)
-        : [...prev, orderId],
-    );
-  };
-
-  const handleThreeDotsClick = (orderId: string) => {
-    console.log("Three dots clicked:", orderId);
   };
 
   useEffect(() => {

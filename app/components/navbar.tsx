@@ -3,12 +3,9 @@
 import { NotificationsOutlined, SearchOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
 const Navbar = () => {
-  const [auth, setAuth] = useState(
-    JSON.parse(localStorage.getItem("auth") || "{}"),
-  );
+  const auth = JSON.parse(localStorage.getItem("auth") || "{}");
 
   return (
     <nav className="mb-8 flex items-center justify-between bg-white px-8 py-2">
