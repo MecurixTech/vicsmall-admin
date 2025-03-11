@@ -1,109 +1,159 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-interface ShippingClass {
-  name: string
-  slug: string
-  description: string
-  productCount: number
-}
-
-const initialShippingClasses: ShippingClass[] = [
-  {
-    name: "Abroad Clothing",
-    slug: "abroad-clothing",
-    description: "-",
-    productCount: 100,
-  },
-  {
-    name: "Express",
-    slug: "express",
-    description: "-",
-    productCount: 35,
-  },
-  {
-    name: "Flash Sales",
-    slug: "flash-sales",
-    description: "-",
-    productCount: 10,
-  },
-]
+type ShippingClass = {
+  shipping_class_id?: string;
+  name: string;
+  slug: string;
+  description: string;
+  product_count: number;
+  created_at?: string;
+  updated_at?: string;
+};
 
 export default function Page() {
-  const [shippingClasses, setShippingClasses] = useState<ShippingClass[]>(initialShippingClasses)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [shippingClasses, setShippingClasses] = useState<ShippingClass[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newShippingClass, setNewShippingClass] = useState({
     name: "",
     description: "",
-  })
+  });
 
   function createSlug(name: string) {
     return name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "")
-  }
-
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value } = e.target
-    setNewShippingClass((prev) => ({ ...prev, [name]: value }))
+      .replace(/(^-|-$)+/g, "");
   }
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     if (newShippingClass.name) {
-      const newClass: ShippingClass = {
+      const newClass = {
         name: newShippingClass.name,
         slug: createSlug(newShippingClass.name),
         description: newShippingClass.description || "-",
-        productCount: 0,
-      }
+        product_count: 0,
+      };
 
-      setShippingClasses([...shippingClasses, newClass])
-      setNewShippingClass({ name: "", description: "" })
-      setIsDialogOpen(false)
+      const addingNewClass = toast.loading("Adding new shipping class...");
+      axios
+        .post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-classes`,
+          newClass,
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            },
+          },
+        )
+        .then((res) => {
+          console.log(res);
+          toast.dismiss(addingNewClass);
+          if (res.status === 201) {
+            toast.success(
+              res.data.Message + ". Refresh the page to view changes",
+            );
+            setNewShippingClass({ name: "", description: "" });
+            setIsDialogOpen(false);
+          } else {
+            toast.error(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          toast.error("An error occurred!");
+          console.log(error);
+        });
     }
   }
 
+  useEffect(() => {
+    const loadingShippingClasses = toast.loading("Loading shipping classes...");
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-classes`,
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        },
+      )
+      .then((res) => {
+        toast.dismiss(loadingShippingClasses);
+        console.log(res);
+        if (res.status === 200) {
+          setShippingClasses(res.data.Data);
+          toast.success(res.data.Message);
+        } else {
+          toast.error(res.data.Message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("An error occurred!");
+      });
+  }, []);
+
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>SHIPPING ZONE</span>
-        <span>|</span>
-        <span className="font-bold">SHIPPING CLASSES</span>
+    <div className="space-y-6 p-6">
+      <div className="flex items-center gap-4 font-semibold">
+        <Link href="/shipping-zone">Shipping zones</Link>
+        <Link href="/shipping-class" className="text-accent-900">
+          Shipping classes
+        </Link>
       </div>
 
-      <h1 className="text-2xl font-semibold">Shipping Class</h1>
+      <h1 className="text-2xl font-semibold">Shipping Classes</h1>
 
-      <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Shipping Class</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Product Count</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {shippingClasses.map((shippingClass) => (
-              <TableRow key={shippingClass.slug}>
-                <TableCell>{shippingClass.name}</TableCell>
-                <TableCell>{shippingClass.slug}</TableCell>
-                <TableCell>{shippingClass.description}</TableCell>
-                <TableCell>{shippingClass.productCount}</TableCell>
+      <div className="rounded-lg border">
+        {shippingClasses.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Shipping Class</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Product Count</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {shippingClasses.map((shippingClass) => (
+                <TableRow key={shippingClass.slug}>
+                  <TableCell>{shippingClass.name}</TableCell>
+                  <TableCell>{shippingClass.slug}</TableCell>
+                  <TableCell>{shippingClass.description}</TableCell>
+                  <TableCell>{shippingClass.product_count}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <p>No shipping classes found</p>
+        )}
       </div>
 
       <div className="flex justify-between">
@@ -118,7 +168,10 @@ export default function Page() {
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Shipping Class Name
                 </label>
                 <Input
@@ -126,12 +179,20 @@ export default function Page() {
                   name="name"
                   placeholder="Enter shipping class name"
                   value={newShippingClass.name}
-                  onChange={handleInputChange}
+                  onChange={(e) =>
+                    setNewShippingClass({
+                      ...newShippingClass,
+                      name: e.target.value,
+                    })
+                  }
                   required
                 />
               </div>
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Description (Optional)
                 </label>
                 <Textarea
@@ -140,7 +201,12 @@ export default function Page() {
                   placeholder="Enter description"
                   className="resize-none"
                   value={newShippingClass.description}
-                  onChange={handleInputChange}
+                  onChange={(e) =>
+                    setNewShippingClass({
+                      ...newShippingClass,
+                      description: e.target.value,
+                    })
+                  }
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -151,6 +217,5 @@ export default function Page() {
         </Dialog>
       </div>
     </div>
-  )
+  );
 }
-

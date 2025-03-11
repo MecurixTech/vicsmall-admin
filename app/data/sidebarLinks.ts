@@ -66,12 +66,6 @@ export const sidebarLinks = [
     href: "/profile",
     icon: PersonOutlined,
   },
-  {
-    id: 9,
-    label: "Logout",
-    href: "/logout",
-    icon: LogoutOutlined,
-  },
 ];
 
 export default sidebarLinks;

@@ -1,3 +1,4 @@
+"use client";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -10,8 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import fetchAdmins from "../lib/data/fetchAdmins";
-import { Admin } from "../data/dummyTypes";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const activities = [
   "John Doe accepted a Request",
@@ -19,9 +21,45 @@ const activities = [
   "John Doe Deactivated an account",
 ];
 
-export default async function page() {
-  const admins = await fetchAdmins();
-  console.log(admins);
+type Admin = {
+  id: string;
+  email: string;
+  full_name: string;
+  country_code: string;
+  phone_number: string;
+  password: string;
+  confirm_password: string;
+  is_manager: boolean;
+  is_active: boolean;
+  is_deleted: boolean;
+};
+
+export default function page() {
+  const [admins, setAdmins] = useState([]);
+
+  useEffect(() => {
+    const loadingAdmins = toast.loading("Loading admins...");
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/list-admins`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        toast.dismiss(loadingAdmins);
+        if (res.status === 200) {
+          setAdmins(res.data.Data);
+          toast.success(res.data.Message);
+        } else {
+          toast.success(res.data.Message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.success("An error occurred!");
+      });
+  }, []);
 
   return (
     <>
@@ -40,7 +78,7 @@ export default async function page() {
 
         <div className="grid gap-6 md:grid-cols-[1fr,300px]">
           <div className="overflow-hidden rounded-lg border border-blue-200">
-            {admins.Success ? (
+            {admins.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -52,7 +90,7 @@ export default async function page() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {admins.Data.map((admin: Admin) => (
+                  {admins.map((admin: Admin) => (
                     <TableRow key={admin.id}>
                       <TableCell>
                         <Checkbox />

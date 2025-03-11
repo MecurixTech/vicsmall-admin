@@ -9,30 +9,150 @@ import {
   CheckCircleOutlineOutlined,
 } from "@mui/icons-material";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { products } from "../data/dummyData";
 import Image from "next/image";
 import Filters from "../components/products/filters";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+type Product = {
+  product_id: string;
+  product_name: string;
+  product_description: string;
+  category?: string;
+  product_tags: string;
+  product_sale_price: string;
+  product_regular_price: string;
+  product_visibility: boolean;
+  product_status: boolean;
+  created_at: Date;
+  updated_at: Date;
+};
 
 const Products = () => {
   const [isInListView, setIsInListView] = useState<boolean>(true);
   const [isShowingFilters, setIsShowingFilters] = useState<boolean>(false);
-  const [checkedProducts, setCheckedProducts] = useState<{ [key: number]: boolean }>({});
-  const [approvedProducts, setApprovedProducts] = useState<{ [key: number]: boolean }>({});
+  const [checkedProducts, setCheckedProducts] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [isShowingApprovedProducts, setIsShowingApprovedProducts] =
+    useState(true);
+  const [approvedProducts, setApprovedProducts] = useState([]);
+  const [pendingProducts, setPendingProducts] = useState([]);
 
-  const handleCheckboxToggle = (id: number) => {
+  const handleCheckboxToggle = (id: string) => {
     setCheckedProducts((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
   };
 
-  const handleApprovalToggle = (id: number) => {
-    setApprovedProducts((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const handleAcceptProduct = (id: string) => {
+    // Approval logic
+    const accepting = toast.loading("Accepting product...");
+    axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/approve-product/${id}`,
+        {
+          product_status: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        },
+      )
+      .then((res) => {
+        toast.dismiss(accepting);
+        console.log(res);
+        if (res.status === 200) {
+          toast.success(
+            res.data.Message + ". Reload the page to see your changes",
+          );
+        } else {
+          toast.error(res.data.Message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("An error occurred!");
+      });
   };
+  const handleRejectProduct = (id: string) => {
+    // Rejection logic
+    const rejecting = toast.loading("Rejecting product");
+    axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/reject-product/${id}`,
+        {
+          product_status: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        },
+      )
+      .then((res) => {
+        toast.dismiss(rejecting);
+        console.log(res);
+        if (res.status === 200) {
+          toast.success(
+            res.data.Message + ". Reload the page to see your changes",
+          );
+        } else {
+          toast.error(res.data.Message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("An error occurred!");
+      });
+  };
+
+  const fetchApprovedProducts = () => {
+    const fetchingProducts = toast.loading("Fetching products...");
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/approved-products`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.dismiss(fetchingProducts);
+          toast.success(res.data.Message);
+          setApprovedProducts(res.data.Data);
+        }
+        console.log(res);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const fetchPendingProducts = () => {
+    const fetchingProducts = toast.loading("Fetching products...");
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/pending-products`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.dismiss(fetchingProducts);
+          toast.success(res.data.Message);
+          setPendingProducts(res.data.Data);
+        }
+        console.log(res);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchApprovedProducts();
+    fetchPendingProducts();
+  }, []);
 
   return (
     <>
@@ -89,8 +209,17 @@ const Products = () => {
           </div>
 
           <div className="my-4 flex items-center gap-4 text-sm">
-            <button className="font-medium">
-              PENDING REQUESTS &gt; <span className="text-gray-400">APPROVED</span>
+            <button
+              onClick={() => setIsShowingApprovedProducts(true)}
+              className={`${isShowingApprovedProducts && "font-bold text-accent-900"}`}
+            >
+              APPROVED
+            </button>
+            <button
+              onClick={() => setIsShowingApprovedProducts(false)}
+              className={`${!isShowingApprovedProducts && "font-bold text-accent-900"}`}
+            >
+              PENDING REQUESTS
             </button>
           </div>
 
@@ -103,73 +232,138 @@ const Products = () => {
                     <th>IMAGE</th>
                     <th>PRODUCT NAME</th>
                     <th>PRICE</th>
-                    <th>PRODUCT CATEGORIES</th>
                     <th>STATUS</th>
                     <th>DATE</th>
                     <th></th>
                   </tr>
                 </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr key={product.id}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={checkedProducts[product.id] || false}
-                          onChange={() => handleCheckboxToggle(product.id)}
-                          className="h-5 w-5 cursor-pointer accent-orange-500"
-                        />
-                      </td>
-                      <td>
-                        <Image
-                          src={product.imgSrc}
-                          alt={product.name}
-                          height={48}
-                          width={48}
-                          className="h-12 w-12 rounded-lg object-cover"
-                        />
-                      </td>
-                      <td>
-                        <Link
-                          href={`products/${product.id}`}
-                          className="hover:underline"
-                        >
-                          {product.name}
-                        </Link>
-                      </td>
-                      <td>{product.price}</td>
-                      <td className="capitalize">{product.category}</td>
-                      <td>
-                        <span
-                          className={`${
-                            product.status === "Available"
-                              ? "bg-green-50 text-green-600"
-                              : "bg-red-50 text-red-600"
-                          } rounded-lg p-2 text-xs`}
-                        >
-                          {product.status}
-                        </span>
-                      </td>
-                      <td>{product.date}</td>
-                      <td>
-                        <button
-                          onClick={() => handleApprovalToggle(product.id)}
-                          className={`${
-                            approvedProducts[product.id]
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          } flex h-8 w-8 items-center justify-center rounded-full transition duration-200`}
-                        >
-                          {approvedProducts[product.id] ? (
-                            <CheckCircleOutlineOutlined />
-                          ) : (
+                {isShowingApprovedProducts ? (
+                  <tbody>
+                    {approvedProducts.map((product: Product) => (
+                      <tr key={product.product_id}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={
+                              checkedProducts[product.product_id] || false
+                            }
+                            onChange={() =>
+                              handleCheckboxToggle(product.product_id)
+                            }
+                            className="h-5 w-5 cursor-pointer accent-orange-500"
+                          />
+                        </td>
+                        <td>
+                          <Image
+                            src="https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP"
+                            alt={product.product_name}
+                            height={48}
+                            width={48}
+                            className="h-12 w-12 rounded-lg object-cover"
+                          />
+                        </td>
+                        <td>
+                          <Link
+                            href={`products/${product.product_id}`}
+                            className="hover:underline"
+                          >
+                            {product.product_name}
+                          </Link>
+                        </td>
+                        <td>{product.product_sale_price}</td>
+                        <td>
+                          <span
+                            className={`${
+                              product.product_status === true
+                                ? "bg-green-50 text-green-600"
+                                : "bg-red-50 text-red-600"
+                            } rounded-lg p-2 text-xs`}
+                          >
+                            {product.product_status
+                              ? "Available"
+                              : "Not available"}
+                          </span>
+                        </td>
+                        <td>{new Date(product.created_at).toDateString()}</td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              handleRejectProduct(product.product_id)
+                            }
+                            className={
+                              "flex h-8 w-8 items-center justify-center rounded-full bg-red-100 text-red-700 transition duration-200"
+                            }
+                          >
                             <CloseOutlined />
-                          )}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                ) : (
+                  <tbody>
+                    {pendingProducts.map((product: Product) => (
+                      <tr key={product.product_id}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={
+                              checkedProducts[product.product_id] || false
+                            }
+                            onChange={() =>
+                              handleCheckboxToggle(product.product_id)
+                            }
+                            className="h-5 w-5 cursor-pointer accent-orange-500"
+                          />
+                        </td>
+                        <td>
+                          <Image
+                            src="https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP"
+                            alt={product.product_name}
+                            height={48}
+                            width={48}
+                            className="h-12 w-12 rounded-lg object-cover"
+                          />
+                        </td>
+                        <td>
+                          <Link
+                            href={`products/${product.product_id}`}
+                            className="hover:underline"
+                          >
+                            {product.product_name}
+                          </Link>
+                        </td>
+                        <td>{product.product_sale_price}</td>
+                        <td>
+                          <span
+                            className={`${
+                              product.product_status === true
+                                ? "bg-green-50 text-green-600"
+                                : "bg-red-50 text-red-600"
+                            } rounded-lg p-2 text-xs`}
+                          >
+                            {product.product_status
+                              ? "Available"
+                              : "Not available"}
+                          </span>
+                        </td>
+                        <td>{new Date(product.created_at).toDateString()}</td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              handleAcceptProduct(product.product_id)
+                            }
+                            className={
+                              "flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-700 transition duration-200"
+                            }
+                          >
+                            <CheckCircleOutlineOutlined />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
               </table>
             </div>
           ) : (

@@ -5,82 +5,98 @@ import {
   MenuOutlined,
   SearchOutlined,
   WindowOutlined,
- 
 } from "@mui/icons-material";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Filters from "../components/products/filters";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 type VendorStatus = "Active" | "Deactivated" | "Offline";
-const vendors = [
-  {
-    id: 1,
-    imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-    name: "Ash Luxy",
-    storeName: "Ash Luxy",
-    categories: [ "Lingerie"],
-    status: "Active" as VendorStatus,
-    date: "2024-03-10",
-  },
-  {
-    id: 2,
-    imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-    name: "Ash Luxy",
-    storeName: "Ash Luxy",
-    categories: ["Lingerie"],
-    status: "Deactivated" as VendorStatus,
-    date: "2024-03-11",
-  },
-  {
-    id: 3,
-    imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-    name: "Ash Luxy",
-    storeName: "Ash Luxy",
-    categories: ["Lingerie"],
-    status: "Offline" as VendorStatus,
-    date: "2024-03-12",
-  },
-  {
-    id: 4,
-    imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-    name: "Fashion Hub",
-    storeName: "Trendy Styles",
-    categories: ["Lingerie"],
-    status: "Active" as VendorStatus,
-    date: "2024-03-13",
-  },
-  {
-    id: 5,
-    imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-    name: "Ash Luxy",
-    storeName: "Ash Luxy",
-    categories: ["Lingerie"],
-    status: "Active" as VendorStatus,
-    date: "2024-03-14",
-  },
-  {
-    id: 6,
-    imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-    name: "Ash Luxy",
-    storeName: "Ash Luxy",
-    categories: ["Lingerie"],
-    status: "Active" as VendorStatus,
-    date: "2024-03-15",
-  },
-];
+// const vendors = [
+//   {
+//     id: 1,
+//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
+//     name: "Ash Luxy",
+//     storeName: "Ash Luxy",
+//     categories: [ "Lingerie"],
+//     status: "Active" as VendorStatus,
+//     date: "2024-03-10",
+//   },
+//   {
+//     id: 2,
+//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
+//     name: "Ash Luxy",
+//     storeName: "Ash Luxy",
+//     categories: ["Lingerie"],
+//     status: "Deactivated" as VendorStatus,
+//     date: "2024-03-11",
+//   },
+//   {
+//     id: 3,
+//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
+//     name: "Ash Luxy",
+//     storeName: "Ash Luxy",
+//     categories: ["Lingerie"],
+//     status: "Offline" as VendorStatus,
+//     date: "2024-03-12",
+//   },
+//   {
+//     id: 4,
+//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
+//     name: "Fashion Hub",
+//     storeName: "Trendy Styles",
+//     categories: ["Lingerie"],
+//     status: "Active" as VendorStatus,
+//     date: "2024-03-13",
+//   },
+//   {
+//     id: 5,
+//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
+//     name: "Ash Luxy",
+//     storeName: "Ash Luxy",
+//     categories: ["Lingerie"],
+//     status: "Active" as VendorStatus,
+//     date: "2024-03-14",
+//   },
+//   {
+//     id: 6,
+//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
+//     name: "Ash Luxy",
+//     storeName: "Ash Luxy",
+//     categories: ["Lingerie"],
+//     status: "Active" as VendorStatus,
+//     date: "2024-03-15",
+//   },
+// ];
+
+type Vendor = {
+  id: string;
+  email: string;
+  full_name: string;
+  country_code: string;
+  phone_number: string;
+  is_vendor: boolean;
+  is_active: boolean;
+  is_deleted: boolean;
+  shop?: string;
+  status: VendorStatus;
+  date: Date;
+};
 
 const VendorsPage = () => {
+  const [vendors, setVendors] = useState([]);
   const [isInListView, setIsInListView] = useState<boolean>(true);
   const [isShowingFilters, setIsShowingFilters] = useState<boolean>(false);
-  const [checkedProducts, setCheckedProducts] = useState<{ [key: number]: boolean }>({});
-  
-  
+  const [checkedProducts, setCheckedProducts] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const statusStyles = {
-    Active: "bg-green-100 text-green-800 border-green-800",
-    Deactivated: "bg-red-100 text-red-800 border-red-800",
-    Offline: "bg-gray-100 text-gray-800 border-gray-800",
+    active: "bg-green-100 text-green-800 border-green-800",
+    deactivated: "bg-red-100 text-red-800 border-red-800",
+    offline: "bg-gray-100 text-gray-800 border-gray-800",
   };
 
   const [filters, setFilters] = useState({
@@ -89,22 +105,40 @@ const VendorsPage = () => {
     outofstock: false,
   });
 
-
-
   const handleFilterChange = (filter: keyof typeof filters) => {
     setFilters((prev) => ({ ...prev, [filter]: !prev[filter] }));
   };
 
- 
-
-  const handleCheckboxToggle = (id: number) => {
+  const handleCheckboxToggle = (id: string) => {
     setCheckedProducts((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
   };
 
- 
+  useEffect(() => {
+    const loadingVendors = toast.loading("Loading vendors...");
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/admin-vendors`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        toast.dismiss(loadingVendors);
+        if (res.status === 200) {
+          setVendors(res.data.Data);
+          toast.success(res.data.Message);
+        } else {
+          toast.error(res.data.Message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("An error occurred!");
+      });
+  }, []);
 
   return (
     <>
@@ -161,8 +195,7 @@ const VendorsPage = () => {
           </div>
 
           <div className="mb-8 w-full max-w-6xl">
-            <div className="flex flex-wrap items-center gap-2 mt-4">
-             
+            <div className="mt-4 flex flex-wrap items-center gap-2">
               <div
                 className={`cursor-pointer rounded px-3 py-1 text-sm ${
                   filters.allproduct
@@ -171,30 +204,7 @@ const VendorsPage = () => {
                 }`}
                 onClick={() => handleFilterChange("allproduct")}
               >
-                ALL PRODUCTS [100]
-              </div>
-
-          
-              <div
-                className={`cursor-pointer rounded px-3 py-1 text-sm ${
-                  filters.available
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-                onClick={() => handleFilterChange("available")}
-              >
-                AVAILABLE [20]
-              </div>
-
-              <div
-                className={`cursor-pointer rounded px-3 py-1 text-sm ${
-                  filters.outofstock
-                    ? "bg-red-100 text-red-800"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-                onClick={() => handleFilterChange("outofstock")}
-              >
-                OUT OF STOCK [4]
+                ALL PRODUCTS [{vendors.length}]
               </div>
             </div>
           </div>
@@ -207,15 +217,13 @@ const VendorsPage = () => {
                     <th></th>
                     <th>PROFILE ID</th>
                     <th>VENDOR NAME</th>
-                    <th>STORE NAME</th>
-                    <th>VENDOR CATEGORIES</th>
                     <th>STATUS</th>
                     <th>DATE</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {vendors.map((vendor) => (
+                  {vendors.map((vendor: Vendor) => (
                     <tr key={vendor.id}>
                       <td>
                         <input
@@ -227,8 +235,8 @@ const VendorsPage = () => {
                       </td>
                       <td>
                         <Image
-                          src={vendor.imgSrc}
-                          alt={vendor.name}
+                          src="https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP"
+                          alt={vendor.full_name}
                           height={48}
                           width={48}
                           className="h-12 w-12 rounded-lg object-cover"
@@ -239,21 +247,21 @@ const VendorsPage = () => {
                           href={`products/${vendor.id}`}
                           className="hover:underline"
                         >
-                          {vendor.name}
+                          {vendor.full_name}
                         </Link>
                       </td>
-                      <td>{vendor.storeName}</td>
-                      <td className="capitalize">{vendor.categories.join(", ")}</td>
                       <td>
                         <span
                           className={`${
-                            statusStyles[vendor.status]
+                            statusStyles[
+                              vendor.status.toLowerCase() as keyof typeof statusStyles
+                            ]
                           } rounded-lg p-2 text-xs`}
                         >
                           {vendor.status}
                         </span>
                       </td>
-                      <td>{vendor.date}</td>
+                      <td>{new Date(vendor.date).toDateString()}</td>
                       {/* <td>
                         <button
                           onClick={() => handleApprovalToggle(vendor.id)}
@@ -277,7 +285,7 @@ const VendorsPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {vendors.map((vendor) => (
+              {vendors.map((vendor: Vendor) => (
                 <Link
                   href={`products/${vendor.id}`}
                   key={vendor.id}
@@ -285,28 +293,24 @@ const VendorsPage = () => {
                 >
                   <span
                     className={`${
-                      statusStyles[vendor.status]
+                      statusStyles[
+                        vendor.status.toLowerCase() as keyof typeof statusStyles
+                      ]
                     } absolute right-4 top-4 rounded-lg p-2 text-xs`}
                   >
                     {vendor.status}
                   </span>
                   <Image
-                    src={vendor.imgSrc}
+                    src="https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP"
                     height={48}
                     width={48}
-                    alt={vendor.name}
+                    alt={vendor.full_name}
                     className="h-32 w-full object-cover"
                   />
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{vendor.name}</p>
-                    <p className="text-gray-400">
-                      Category: {vendor.categories.join(", ")}
-                    </p>
+                    <p className="font-medium">{vendor.full_name}</p>
                     <div className="flex items-center justify-between">
-                      <span>{vendor.date}</span>
-                      <span className="text-lg font-bold text-gray-800">
-                        {vendor.storeName}
-                      </span>
+                      <span>{new Date(vendor.date).toDateString()}</span>
                     </div>
                   </div>
                 </Link>
