@@ -40,6 +40,7 @@ const Reviews = () => {
         })
         .catch((error) => {
           console.log(error);
+          toast.dismiss(loadingReviews);
           toast.error("An error occurred!");
         });
     }
