@@ -26,27 +26,29 @@ export default function Page() {
   const [admins, setAdmins] = useState([]);
 
   useEffect(() => {
-    const loadingAdmins = toast.loading("Loading admins...");
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/list-admins`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        toast.dismiss(loadingAdmins);
-        if (res.status === 200) {
-          setAdmins(res.data.Data);
-          toast.success(res.data.Message);
-        } else {
-          toast.success(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.success("An error occurred!");
-      });
+    if (typeof window !== "undefined") {
+      const loadingAdmins = toast.loading("Loading admins...");
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/list-admins`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          toast.dismiss(loadingAdmins);
+          if (res.status === 200) {
+            setAdmins(res.data.Data);
+            toast.success(res.data.Message);
+          } else {
+            toast.success(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.success("An error occurred!");
+        });
+    }
   }, []);
 
   return (
