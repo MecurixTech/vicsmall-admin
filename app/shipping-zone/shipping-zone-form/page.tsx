@@ -1,3 +1,9 @@
+const ShippingZoneFormPage = () => {
+  return <div>ShippingZoneFormPage</div>;
+};
+
+export default ShippingZoneFormPage;
+
 // "use client"
 
 // import React, { useState } from 'react'
@@ -19,7 +25,7 @@
 //   const [zoneName, setZoneName] = useState("")
 //   const [zoneRegions, setZoneRegions] = useState("")
 //   const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([])
-  
+
 //   // Dialog state
 //   const [isDialogOpen, setIsDialogOpen] = useState(false)
 //   const [newMethod, setNewMethod] = useState<ShippingMethod>({
@@ -48,15 +54,15 @@
 //       alert("Please enter a title for the shipping method")
 //       return
 //     }
-    
+
 //     setIsAdding(true)
-    
+
 //     // Simulate API call with setTimeout
 //     setTimeout(() => {
 //       setShippingMethods([...shippingMethods, newMethod])
 //       setIsDialogOpen(false)
 //       setIsAdding(false)
-      
+
 //       // Show success message
 //       if (typeof Toast !== 'undefined') {
 //         Toast({
@@ -70,8 +76,8 @@
 //   }
 
 //   const toggleMethodEnabled = (id: string) => {
-//     setShippingMethods(methods => 
-//       methods.map(method => 
+//     setShippingMethods(methods =>
+//       methods.map(method =>
 //         method.id === id ? { ...method, enabled: !method.enabled } : method
 //       )
 //     )
@@ -82,9 +88,9 @@
 //       alert("Please enter a zone name")
 //       return
 //     }
-    
+
 //     setIsSaving(true)
-    
+
 //     // Here you would typically send data to your backend
 //     // Simulate an API call with setTimeout
 //     setTimeout(() => {
@@ -93,9 +99,9 @@
 //         zoneRegions,
 //         shippingMethods
 //       })
-      
+
 //       setIsSaving(false)
-      
+
 //       // Show success message
 //       if (typeof Toast !== 'undefined') {
 //         Toast({
@@ -116,10 +122,10 @@
 //         <span className="text-gray-400">|</span>
 //         <span className="cursor-pointer hover:text-indigo-600">SHIPPING CLASSES</span>
 //       </div>
-      
+
 //       {/* Title */}
 //       <h1 className="text-2xl font-semibold mb-6">Shipping Zone &gt; Zone</h1>
-      
+
 //       {/* Form fields */}
 //       <div className="space-y-4 mb-6">
 //         <div className="grid grid-cols-4 items-center">
@@ -132,7 +138,7 @@
 //             required
 //           />
 //         </div>
-        
+
 //         <div className="grid grid-cols-4 items-center">
 //           <label className="text-sm font-medium text-gray-700">Zone regions</label>
 //           <Input
@@ -143,10 +149,10 @@
 //           />
 //         </div>
 //       </div>
-      
+
 //       {/* Shipping methods section */}
 //       <h2 className="text-base font-medium mb-4">Shipping methods</h2>
-      
+
 //       {/* Table */}
 //       <div className="bg-white rounded-md border border-gray-200 mb-4 overflow-hidden">
 //         <div className="grid grid-cols-3 p-4 border-b border-gray-200 text-sm font-medium bg-gray-50">
@@ -154,7 +160,7 @@
 //           <div>Enabled</div>
 //           <div>Description</div>
 //         </div>
-        
+
 //         {shippingMethods.length === 0 ? (
 //           <div className="p-8 text-center text-gray-500">
 //             No shipping methods added yet. Click &quot;Add Shipping Method&quot; to create one.
@@ -164,9 +170,9 @@
 //             <div key={method.id} className="grid grid-cols-3 p-4 border-b border-gray-200 items-center">
 //               <div className="font-medium">{method.title}</div>
 //               <div>
-//                 <Switch 
-//                   checked={method.enabled} 
-//                   onCheckedChange={() => toggleMethodEnabled(method.id)} 
+//                 <Switch
+//                   checked={method.enabled}
+//                   onCheckedChange={() => toggleMethodEnabled(method.id)}
 //                 />
 //               </div>
 //               <div className="text-sm text-gray-600">{method.description}</div>
@@ -174,20 +180,20 @@
 //           ))
 //         )}
 //       </div>
-      
+
 //       {/* Action buttons */}
 //       <div className="flex justify-end mb-6">
-//         <Button 
+//         <Button
 //           variant="outline"
 //           onClick={openAddMethodDialog}
 //         >
 //           Add Shipping Method
 //         </Button>
 //       </div>
-      
+
 //       <div>
-//         <Button 
-//           variant="outline" 
+//         <Button
+//           variant="outline"
 //           className="text-gray-700"
 //           onClick={saveShippingZone}
 //           disabled={zoneName.trim() === "" || isSaving}
