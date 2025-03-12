@@ -9,8 +9,10 @@ const Sidebar = () => {
   const currentPath = usePathname();
 
   const handleLogout = () => {
-    localStorage.removeItem("auth");
-    window.location.reload();
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth");
+      window.location.reload();
+    }
   };
 
   return (

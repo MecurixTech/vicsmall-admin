@@ -12,7 +12,8 @@ import axios from "axios";
 
 const Home = () => {
   const [auth, setAuth] = useState(
-    JSON.parse(localStorage.getItem("auth") || "{}"),
+    typeof window !== "undefined" &&
+      JSON.parse(localStorage.getItem("auth") || "{}"),
   );
 
   // Refresh the access token whenever user opens website

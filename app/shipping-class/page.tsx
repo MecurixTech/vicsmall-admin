@@ -60,11 +60,47 @@ export default function Page() {
         product_count: 0,
       };
 
-      const addingNewClass = toast.loading("Adding new shipping class...");
+      if (typeof window !== "undefined") {
+        const addingNewClass = toast.loading("Adding new shipping class...");
+        axios
+          .post(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-classes`,
+            newClass,
+            {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+              },
+            },
+          )
+          .then((res) => {
+            console.log(res);
+            toast.dismiss(addingNewClass);
+            if (res.status === 201) {
+              toast.success(
+                res.data.Message + ". Refresh the page to view changes",
+              );
+              setNewShippingClass({ name: "", description: "" });
+              setIsDialogOpen(false);
+            } else {
+              toast.error(res.data.Message);
+            }
+          })
+          .catch((error) => {
+            toast.error("An error occurred!");
+            console.log(error);
+          });
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const loadingShippingClasses = toast.loading(
+        "Loading shipping classes...",
+      );
       axios
-        .post(
+        .get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-classes`,
-          newClass,
           {
             headers: {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
@@ -72,50 +108,20 @@ export default function Page() {
           },
         )
         .then((res) => {
+          toast.dismiss(loadingShippingClasses);
           console.log(res);
-          toast.dismiss(addingNewClass);
-          if (res.status === 201) {
-            toast.success(
-              res.data.Message + ". Refresh the page to view changes",
-            );
-            setNewShippingClass({ name: "", description: "" });
-            setIsDialogOpen(false);
+          if (res.status === 200) {
+            setShippingClasses(res.data.Data);
+            toast.success(res.data.Message);
           } else {
             toast.error(res.data.Message);
           }
         })
         .catch((error) => {
-          toast.error("An error occurred!");
           console.log(error);
+          toast.error("An error occurred!");
         });
     }
-  }
-
-  useEffect(() => {
-    const loadingShippingClasses = toast.loading("Loading shipping classes...");
-    axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-classes`,
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
-          },
-        },
-      )
-      .then((res) => {
-        toast.dismiss(loadingShippingClasses);
-        console.log(res);
-        if (res.status === 200) {
-          setShippingClasses(res.data.Data);
-          toast.success(res.data.Message);
-        } else {
-          toast.error(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred!");
-      });
   }, []);
 
   return (

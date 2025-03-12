@@ -51,102 +51,111 @@ const Products = () => {
   const handleAcceptProduct = (id: string) => {
     // Approval logic
     const accepting = toast.loading("Accepting product...");
-    axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/approve-product/${id}`,
-        {
-          product_status: false,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+    if (typeof window !== "undefined") {
+      axios
+        .patch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/approve-product/${id}`,
+          {
+            product_status: false,
           },
-        },
-      )
-      .then((res) => {
-        toast.dismiss(accepting);
-        console.log(res);
-        if (res.status === 200) {
-          toast.success(
-            res.data.Message + ". Reload the page to see your changes",
-          );
-        } else {
-          toast.error(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred!");
-      });
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            },
+          },
+        )
+        .then((res) => {
+          toast.dismiss(accepting);
+          console.log(res);
+          if (res.status === 200) {
+            toast.success(
+              res.data.Message + ". Reload the page to see your changes",
+            );
+          } else {
+            toast.error(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("An error occurred!");
+        });
+    }
   };
+
   const handleRejectProduct = (id: string) => {
     // Rejection logic
     const rejecting = toast.loading("Rejecting product");
-    axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/reject-product/${id}`,
-        {
-          product_status: false,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+    if (typeof window !== "undefined") {
+      axios
+        .patch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/reject-product/${id}`,
+          {
+            product_status: false,
           },
-        },
-      )
-      .then((res) => {
-        toast.dismiss(rejecting);
-        console.log(res);
-        if (res.status === 200) {
-          toast.success(
-            res.data.Message + ". Reload the page to see your changes",
-          );
-        } else {
-          toast.error(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred!");
-      });
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            },
+          },
+        )
+        .then((res) => {
+          toast.dismiss(rejecting);
+          console.log(res);
+          if (res.status === 200) {
+            toast.success(
+              res.data.Message + ". Reload the page to see your changes",
+            );
+          } else {
+            toast.error(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("An error occurred!");
+        });
+    }
   };
 
   const fetchApprovedProducts = () => {
     const fetchingProducts = toast.loading("Fetching products...");
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/approved-products`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
-        },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          toast.dismiss(fetchingProducts);
-          toast.success(res.data.Message);
-          setApprovedProducts(res.data.Data);
-        }
-        console.log(res);
-      })
-      .catch((error) => console.log(error));
+    if (typeof window !== "undefined") {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/approved-products`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            toast.dismiss(fetchingProducts);
+            toast.success(res.data.Message);
+            setApprovedProducts(res.data.Data);
+          }
+          console.log(res);
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   const fetchPendingProducts = () => {
     const fetchingProducts = toast.loading("Fetching products...");
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/pending-products`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
-        },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          toast.dismiss(fetchingProducts);
-          toast.success(res.data.Message);
-          setPendingProducts(res.data.Data);
-        }
-        console.log(res);
-      })
-      .catch((error) => console.log(error));
+    if (typeof window !== "undefined") {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/pending-products`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            toast.dismiss(fetchingProducts);
+            toast.success(res.data.Message);
+            setPendingProducts(res.data.Data);
+          }
+          console.log(res);
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   useEffect(() => {

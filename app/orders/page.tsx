@@ -32,27 +32,29 @@ export default function OrdersPage() {
   };
 
   useEffect(() => {
-    const orderlist = toast.loading("Retrieving order list...");
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/admin-orders`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
-        },
-      })
-      .then((res) => {
-        toast.dismiss(orderlist);
-        console.log(res);
-        if (res.status === 200) {
-          setOrders(res.data.Data);
-          toast.success(res.data.Message);
-        } else {
-          toast.error(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred!");
-      });
+    if (typeof window !== "undefined") {
+      const orderlist = toast.loading("Retrieving order list...");
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/admin-orders`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        })
+        .then((res) => {
+          toast.dismiss(orderlist);
+          console.log(res);
+          if (res.status === 200) {
+            setOrders(res.data.Data);
+            toast.success(res.data.Message);
+          } else {
+            toast.error(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("An error occurred!");
+        });
+    }
   }, []);
 
   return (

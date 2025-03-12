@@ -34,30 +34,32 @@ export default function Page() {
   const [shippingZones, setShippingZones] = useState([]);
 
   useEffect(() => {
-    const loadingShippingZones = toast.loading("Loading shipping zones...");
-    axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-zones`,
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+    if (typeof window !== "undefined") {
+      const loadingShippingZones = toast.loading("Loading shipping zones...");
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-zones`,
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            },
           },
-        },
-      )
-      .then((res) => {
-        toast.dismiss(loadingShippingZones);
-        console.log(res);
-        if (res.status === 200) {
-          setShippingZones(res.data.Data);
-          toast.success(res.data.Message);
-        } else {
-          toast.error(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred!");
-      });
+        )
+        .then((res) => {
+          toast.dismiss(loadingShippingZones);
+          console.log(res);
+          if (res.status === 200) {
+            setShippingZones(res.data.Data);
+            toast.success(res.data.Message);
+          } else {
+            toast.error(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("An error occurred!");
+        });
+    }
   }, []);
 
   return (

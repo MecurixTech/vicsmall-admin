@@ -20,27 +20,29 @@ const Reviews = () => {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    const loadingReviews = toast.loading("Loading reviews...");
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/review/admin-reviews`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        toast.dismiss(loadingReviews);
-        if (res.status === 200) {
-          setReviews(res.data.Data);
-          toast.success(res.data.Message);
-        } else {
-          toast.error(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred!");
-      });
+    if (typeof window !== "undefined") {
+      const loadingReviews = toast.loading("Loading reviews...");
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/review/admin-reviews`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          toast.dismiss(loadingReviews);
+          if (res.status === 200) {
+            setReviews(res.data.Data);
+            toast.success(res.data.Message);
+          } else {
+            toast.error(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("An error occurred!");
+        });
+    }
   }, []);
 
   return (

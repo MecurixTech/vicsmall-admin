@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Navbar = () => {
-  const auth = JSON.parse(localStorage.getItem("auth") || "{}");
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
 
   return (
     <nav className="mb-8 flex items-center justify-between bg-white px-8 py-2">

@@ -39,22 +39,25 @@ export default function Page() {
   });
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle profile update logic here
-    setIsLoading(true);
-    const response = await updateProfile(
-      formData,
-      JSON.parse(localStorage.getItem("auth") || "{}").access,
-    );
-    if (response) {
-      setIsLoading(false);
-      if (response.Success) {
-        toast.success(response.Message);
-        window.location.reload();
-      } else {
-        toast.error(response.Message);
+    if (typeof window !== "undefined") {
+      e.preventDefault();
+      // Handle profile update logic here
+      setIsLoading(true);
+
+      const response = await updateProfile(
+        formData,
+        JSON.parse(localStorage.getItem("auth") || "{}").access,
+      );
+      if (response) {
+        setIsLoading(false);
+        if (response.Success) {
+          toast.success(response.Message);
+          window.location.reload();
+        } else {
+          toast.error(response.Message);
+        }
+        console.log(response);
       }
-      console.log(response);
     }
     // console.log("Profile updated:", profile);
   };
@@ -66,17 +69,19 @@ export default function Page() {
   };
 
   useEffect(() => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/admin-profile`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
-        },
-      })
-      .then((response) => {
-        setProfile(response.data.Data);
-      })
-      .catch((error) => console.log(error));
+    if (typeof window !== "undefined") {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/admin-profile`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+          },
+        })
+        .then((response) => {
+          setProfile(response.data.Data);
+        })
+        .catch((error) => console.log(error));
+    }
   }, []);
 
   return (

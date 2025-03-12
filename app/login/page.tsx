@@ -7,7 +7,9 @@ import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 
 const LoginPage: React.FC = () => {
-  const auth = JSON.parse(localStorage.getItem("auth") || "{}");
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
 
   if (auth.access) {
     redirect("/");
@@ -23,9 +25,11 @@ const LoginPage: React.FC = () => {
     if (response) {
       setIsLoading(false);
       if (response.Success) {
-        localStorage.setItem("auth", JSON.stringify(response.Data));
-        toast.success(response.Message);
-        window.location.reload();
+        if (typeof window !== "undefined") {
+          localStorage.setItem("auth", JSON.stringify(response.Data));
+          toast.success(response.Message);
+          window.location.reload();
+        }
       } else {
         toast.error(response.Message);
       }
