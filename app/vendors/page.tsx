@@ -137,6 +137,7 @@ const VendorsPage = () => {
         })
         .catch((error) => {
           console.log(error);
+          toast.dismiss(loadingVendors);
           toast.error("An error occurred!");
         });
     }

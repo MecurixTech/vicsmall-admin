@@ -52,6 +52,7 @@ export default function OrdersPage() {
         })
         .catch((error) => {
           console.log(error);
+          toast.dismiss(orderlist);
           toast.error("An error occurred!");
         });
     }

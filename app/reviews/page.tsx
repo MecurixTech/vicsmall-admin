@@ -75,8 +75,8 @@ const Reviews = () => {
         </button>
       </div>
 
-      <div className="overscroll-x-scroll w-full">
-        <table className="min-w-full rounded-xl bg-white text-sm shadow-sm">
+      <div className="max-w-[100vw] overflow-x-auto">
+        <table className="w-full min-w-[600px] rounded-xl bg-white text-sm shadow-sm">
           <thead>
             <tr>
               <th>

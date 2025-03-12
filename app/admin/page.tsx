@@ -46,6 +46,7 @@ export default function Page() {
         })
         .catch((error) => {
           console.log(error);
+          toast.dismiss(loadingAdmins);
           toast.success("An error occurred!");
         });
     }

@@ -77,6 +77,7 @@ const Products = () => {
         })
         .catch((error) => {
           console.log(error);
+          toast.dismiss(accepting);
           toast.error("An error occurred!");
         });
     }
@@ -111,6 +112,7 @@ const Products = () => {
         })
         .catch((error) => {
           console.log(error);
+          toast.dismiss(rejecting);
           toast.error("An error occurred!");
         });
     }
@@ -133,7 +135,12 @@ const Products = () => {
           }
           console.log(res);
         })
-        .catch((error) => console.log(error));
+
+        .catch((error) => {
+          console.log(error);
+          toast.dismiss(fetchingProducts);
+          toast.error("An error occurred!");
+        });
     }
   };
 
@@ -149,12 +156,17 @@ const Products = () => {
         .then((res) => {
           if (res.status === 200) {
             toast.dismiss(fetchingProducts);
+
             toast.success(res.data.Message);
             setPendingProducts(res.data.Data);
           }
           console.log(res);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          toast.dismiss(fetchingProducts);
+          toast.error("An error occurred!");
+        });
     }
   };
 

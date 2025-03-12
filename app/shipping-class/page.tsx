@@ -86,6 +86,7 @@ export default function Page() {
             }
           })
           .catch((error) => {
+            toast.dismiss(addingNewClass);
             toast.error("An error occurred!");
             console.log(error);
           });
@@ -119,6 +120,7 @@ export default function Page() {
         })
         .catch((error) => {
           console.log(error);
+          toast.dismiss(loadingShippingClasses);
           toast.error("An error occurred!");
         });
     }
