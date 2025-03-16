@@ -10,9 +10,9 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { products } from "../data/dummyData";
+import { products } from "../../data/dummyData";
 import Image from "next/image";
-import Filters from "../components/products/filters";
+import Filters from "../../components/products/filters";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
@@ -398,37 +398,37 @@ const Products = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {products.map((product) => (
+              {products.map((product: Product) => (
                 <Link
-                  href={`products/${product.id}`}
-                  key={product.id}
+                  href={`products/${product.product_id}`}
+                  key={product.product_id}
                   className="relative overflow-hidden rounded-xl bg-white"
                 >
                   <span
                     className={`${
-                      product.status === "Available"
+                      product.product_status
                         ? "bg-green-50 text-green-600"
                         : "bg-red-50 text-red-600"
                     } absolute right-4 top-4 rounded-lg p-2 text-xs`}
                   >
-                    {product.status}
+                    {product.product_status}
                   </span>
                   <Image
-                    src={product.imgSrc}
+                    src="https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP"
                     height={48}
                     width={48}
-                    alt={product.name}
+                    alt={product.product_name}
                     className="h-32 w-full object-cover"
                   />
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{product.name}</p>
+                    <p className="font-medium">{product.product_name}</p>
                     <p className="text-gray-400">
                       Category: {product.category}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span>{product.date}</span>
+                      <span>{new Date(product.created_at).toDateString()}</span>
                       <span className="text-lg font-bold text-gray-800">
-                        {product.price}
+                        {product.product_sale_price}
                       </span>
                     </div>
                   </div>

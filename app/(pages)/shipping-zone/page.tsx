@@ -70,7 +70,7 @@ export default function Page() {
           toast.error("An error occurred!");
         });
     }
-  }, []);
+  }, [auth.access]);
 
   return (
     <>

@@ -1,11 +1,11 @@
 "use client";
 
-
 import Link from "next/link";
 import { useState } from "react";
 import { products } from "../data/dummyData";
 import Image from "next/image";
 import Filters from "../components/products/filters";
+import { Product } from "../data/dummyTypes";
 
 const TopProducts = () => {
   const [isInListView] = useState<boolean>(true);
@@ -13,25 +13,17 @@ const TopProducts = () => {
 
   return (
     <section className="flex flex-col">
-      
-      <h1 className="mb-4 p-4 text-3xl font-bold text-gray-800 ">
-       Top Products
+      <h1 className="mb-4 p-4 text-3xl font-bold text-gray-800">
+        Top Products
       </h1>
       <div className="flex items-start gap-4">
-        
         {isShowingFilters && <Filters />}
-        
 
         <div className="flex-[5]">
-          
-
-          
-
           {isInListView ? (
             <table className="w-full rounded-xl bg-white text-sm shadow-sm">
               <thead>
                 <tr>
-                  
                   <th>PRODUCT NAME</th>
                   <th>PRICE</th>
                   <th>STATUS</th>
@@ -39,38 +31,39 @@ const TopProducts = () => {
                 </tr>
               </thead>
 
-              <tbody>
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    
-                    <td>
-                      <Link
-                        href={`products/${product.id}`}
-                        className="hover:underline"
-                      >
-                        {product.name}
-                      </Link>
-                    </td>
-                    <td>{product.price}</td>
-                    
-                    <td>
-                      <span
-                        className={`${product.status === "Available" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"} rounded-lg p-2 text-xs`}
-                      >
-                        {product.status}
-                      </span>
-                    </td>
-                    
-                    <td>
-                      {product.quantity}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              {products.length > 0 ? (
+                <tbody>
+                  {products.map((product: Product) => (
+                    <tr key={product.id}>
+                      <td>
+                        <Link
+                          href={`products/${product.id}`}
+                          className="hover:underline"
+                        >
+                          {product.name}
+                        </Link>
+                      </td>
+                      <td>{product.price}</td>
+
+                      <td>
+                        <span
+                          className={`${product.status === "Available" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"} rounded-lg p-2 text-xs`}
+                        >
+                          {product.status}
+                        </span>
+                      </td>
+
+                      <td>{product.quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              ) : (
+                <p className="text-center">No products yet...</p>
+              )}
             </table>
           ) : (
-            <div className="xs:grid-cols-2 grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {products.map((product) => (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xs:grid-cols-2">
+              {products.map((product: Product) => (
                 <Link
                   href={`products/${product.id}`}
                   key={product.id}
@@ -90,7 +83,7 @@ const TopProducts = () => {
                   />
                   <div className="p-2 text-sm">
                     <p className="font-medium">{product.name}</p>
-                    
+
                     <div className="flex items-center justify-between">
                       <span>{product.date}</span>
                       <span className="text-lg font-bold text-gray-800">

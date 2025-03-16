@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
   return (
     <form
       onSubmit={(e) => handleSubmit(e)}
-      className="rounded-lg bg-white p-12 shadow-lg"
+      className="m-8 rounded-lg bg-white p-12 shadow-lg"
     >
       <h1 className="mb-8 text-center text-3xl">Welcome back!</h1>
 
@@ -82,7 +82,7 @@ const LoginPage: React.FC = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="h-full w-full rounded-lg bg-accent-900 py-3 font-semibold text-white transition duration-300 hover:bg-orange-600 disabled:opacity-30"
+        className="h-full w-full rounded-xl bg-accent-900 py-3 font-semibold text-white transition duration-300 hover:bg-orange-600 disabled:opacity-30"
       >
         {isLoading ? "Logging in..." : "Login"}
       </button>

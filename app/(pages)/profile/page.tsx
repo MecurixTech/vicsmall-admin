@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import updateProfile from "../lib/actions/updateProfile";
+import updateProfile from "../../lib/actions/updateProfile";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
@@ -76,6 +76,7 @@ export default function Page() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      const loadingProfile = toast.loading("Loading profile details...");
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/admin-profile`, {
           headers: {
@@ -85,10 +86,15 @@ export default function Page() {
         })
         .then((response) => {
           setProfile(response.data.Data);
+          toast.success(response.data.Message);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          toast.error("An error occurred!");
+        })
+        .finally(() => toast.dismiss(loadingProfile));
     }
-  }, []);
+  }, [auth.access]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

@@ -65,7 +65,7 @@ export default function OrdersPage() {
           toast.error("An error occurred!");
         });
     }
-  }, []);
+  }, [auth.access]);
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-gray-100 p-4">

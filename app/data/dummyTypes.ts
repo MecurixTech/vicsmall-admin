@@ -24,3 +24,14 @@ export type Admin = {
   is_active: boolean;
   is_deleted: boolean;
 };
+
+export type Product = {
+  id: number;
+  status: string;
+  name: string;
+  category: string;
+  imgSrc: string;
+  price: string;
+  date: string;
+  quantity: string;
+};

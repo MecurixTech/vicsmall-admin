@@ -2,7 +2,7 @@
 
 import { MoreVertOutlined, SearchOutlined } from "@mui/icons-material";
 import Image from "next/image";
-import StarRating from "../components/star-rating";
+import StarRating from "../../components/star-rating";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -53,7 +53,7 @@ const Reviews = () => {
           toast.error("An error occurred!");
         });
     }
-  }, []);
+  }, [auth.access]);
 
   return (
     <>
@@ -116,7 +116,7 @@ const Reviews = () => {
                     aria-label="Select all items"
                   />
                 </td>
-                <td className="flex items-center gap-2">
+                <td className="flex min-w-32 items-center gap-2">
                   <Image
                     src="https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP"
                     alt={review.product_name}

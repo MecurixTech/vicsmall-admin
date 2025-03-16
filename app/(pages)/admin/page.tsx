@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Admin } from "../data/dummyTypes";
+import { Admin } from "../../data/dummyTypes";
 import { redirect } from "next/navigation";
 
 const activities = [
@@ -59,7 +59,7 @@ export default function Page() {
           toast.success("An error occurred!");
         });
     }
-  }, []);
+  }, [auth.access]);
 
   return (
     <>

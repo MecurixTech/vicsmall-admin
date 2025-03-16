@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Filters from "../components/products/filters";
+import Filters from "../../components/products/filters";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
@@ -94,7 +94,7 @@ const VendorsPage = () => {
           toast.error("An error occurred!");
         });
     }
-  }, []);
+  }, [auth.access]);
 
   return (
     <>
