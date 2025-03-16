@@ -6,6 +6,7 @@ import StarRating from "../components/star-rating";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type Review = {
   id: number;
@@ -17,6 +18,14 @@ type Review = {
 };
 
 const Reviews = () => {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
@@ -25,7 +34,7 @@ const Reviews = () => {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/review/admin-reviews`, {
           headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            Authorization: `Bearer ${auth.access}`,
           },
         })
         .then((res) => {

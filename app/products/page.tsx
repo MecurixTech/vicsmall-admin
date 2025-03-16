@@ -15,6 +15,7 @@ import Image from "next/image";
 import Filters from "../components/products/filters";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type Product = {
   product_id: string;
@@ -31,6 +32,14 @@ type Product = {
 };
 
 const Products = () => {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [isInListView, setIsInListView] = useState<boolean>(true);
   const [isShowingFilters, setIsShowingFilters] = useState<boolean>(false);
   const [checkedProducts, setCheckedProducts] = useState<{
@@ -60,7 +69,7 @@ const Products = () => {
           },
           {
             headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+              Authorization: `Bearer ${auth.access}`,
             },
           },
         )
@@ -95,7 +104,7 @@ const Products = () => {
           },
           {
             headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+              Authorization: `Bearer ${auth.access}`,
             },
           },
         )
@@ -124,7 +133,7 @@ const Products = () => {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/approved-products`, {
           headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            Authorization: `Bearer ${auth.access}`,
           },
         })
         .then((res) => {
@@ -150,7 +159,7 @@ const Products = () => {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/pending-products`, {
           headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            Authorization: `Bearer ${auth.access}`,
           },
         })
         .then((res) => {

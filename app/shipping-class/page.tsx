@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type ShippingClass = {
   shipping_class_id?: string;
@@ -36,6 +37,14 @@ type ShippingClass = {
 };
 
 export default function Page() {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [shippingClasses, setShippingClasses] = useState<ShippingClass[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newShippingClass, setNewShippingClass] = useState({
@@ -68,7 +77,7 @@ export default function Page() {
             newClass,
             {
               headers: {
-                Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+                Authorization: `Bearer ${auth.access}`,
               },
             },
           )
@@ -104,7 +113,7 @@ export default function Page() {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-classes`,
           {
             headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+              Authorization: `Bearer ${auth.access}`,
             },
           },
         )

@@ -12,64 +12,9 @@ import Image from "next/image";
 import Filters from "../components/products/filters";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type VendorStatus = "Active" | "Deactivated" | "Offline";
-// const vendors = [
-//   {
-//     id: 1,
-//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-//     name: "Ash Luxy",
-//     storeName: "Ash Luxy",
-//     categories: [ "Lingerie"],
-//     status: "Active" as VendorStatus,
-//     date: "2024-03-10",
-//   },
-//   {
-//     id: 2,
-//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-//     name: "Ash Luxy",
-//     storeName: "Ash Luxy",
-//     categories: ["Lingerie"],
-//     status: "Deactivated" as VendorStatus,
-//     date: "2024-03-11",
-//   },
-//   {
-//     id: 3,
-//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-//     name: "Ash Luxy",
-//     storeName: "Ash Luxy",
-//     categories: ["Lingerie"],
-//     status: "Offline" as VendorStatus,
-//     date: "2024-03-12",
-//   },
-//   {
-//     id: 4,
-//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-//     name: "Fashion Hub",
-//     storeName: "Trendy Styles",
-//     categories: ["Lingerie"],
-//     status: "Active" as VendorStatus,
-//     date: "2024-03-13",
-//   },
-//   {
-//     id: 5,
-//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-//     name: "Ash Luxy",
-//     storeName: "Ash Luxy",
-//     categories: ["Lingerie"],
-//     status: "Active" as VendorStatus,
-//     date: "2024-03-14",
-//   },
-//   {
-//     id: 6,
-//     imgSrc: "https://utfs.io/f/wLDjZbdcJHpRZf4TaQuIU7aODg2yt0HSxWFBNfqTKvI59cYP",
-//     name: "Ash Luxy",
-//     storeName: "Ash Luxy",
-//     categories: ["Lingerie"],
-//     status: "Active" as VendorStatus,
-//     date: "2024-03-15",
-//   },
-// ];
 
 type Vendor = {
   id: string;
@@ -86,6 +31,14 @@ type Vendor = {
 };
 
 const VendorsPage = () => {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [vendors, setVendors] = useState([]);
   const [isInListView, setIsInListView] = useState<boolean>(true);
   const [isShowingFilters, setIsShowingFilters] = useState<boolean>(false);
@@ -122,7 +75,7 @@ const VendorsPage = () => {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/admin-vendors`, {
           headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            Authorization: `Bearer ${auth.access}`,
           },
         })
         .then((res) => {

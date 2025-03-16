@@ -9,12 +9,17 @@ import TopProducts from "./components/topproducts";
 import BrandsChart from "./components/brandscategory";
 import TrendingCard from "./components/trendingproducts";
 import axios from "axios";
+import { redirect } from "next/navigation";
 
 const Home = () => {
   const [auth, setAuth] = useState(
     typeof window !== "undefined" &&
       JSON.parse(localStorage.getItem("auth") || "{}"),
   );
+
+  if (!auth.access) {
+    redirect("/login");
+  }
 
   // Refresh the access token whenever user opens website
   // A tacky solution, but it works as long as the user does

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Admin } from "../data/dummyTypes";
+import { redirect } from "next/navigation";
 
 const activities = [
   "John Doe accepted a Request",
@@ -23,6 +24,14 @@ const activities = [
 ];
 
 export default function Page() {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [admins, setAdmins] = useState([]);
 
   useEffect(() => {
@@ -31,7 +40,7 @@ export default function Page() {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/list-admins`, {
           headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            Authorization: `Bearer ${auth.access}`,
           },
         })
         .then((res) => {

@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type ShippingZone = {
   shipping_zone_id: string;
@@ -31,6 +32,14 @@ type ShippingZone = {
 };
 
 export default function Page() {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [shippingZones, setShippingZones] = useState([]);
 
   useEffect(() => {
@@ -41,7 +50,7 @@ export default function Page() {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/shipping/admin-shipping-zones`,
           {
             headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+              Authorization: `Bearer ${auth.access}`,
             },
           },
         )

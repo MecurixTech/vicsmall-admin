@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import Delete from "@mui/icons-material/Delete";
+import { redirect } from "next/navigation";
 
 interface PaymentMethod {
   name: string;
@@ -28,6 +29,13 @@ interface Currency {
 }
 
 export default function Page() {
+  const auth = typeof window !== "undefined" &&
+  JSON.parse(localStorage.getItem("auth") || "{}")
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
     {
       name: "Paystack (Credit/Debit)",

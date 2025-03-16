@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import updateProfile from "../lib/actions/updateProfile";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type Profile = {
   about_me: string;
@@ -23,6 +24,14 @@ type Profile = {
 };
 
 export default function Page() {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState<Profile>();
 
@@ -44,10 +53,7 @@ export default function Page() {
       // Handle profile update logic here
       setIsLoading(true);
 
-      const response = await updateProfile(
-        formData,
-        JSON.parse(localStorage.getItem("auth") || "{}").access,
-      );
+      const response = await updateProfile(formData, auth.access);
       if (response) {
         setIsLoading(false);
         if (response.Success) {
@@ -74,7 +80,7 @@ export default function Page() {
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/admin-profile`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            Authorization: `Bearer ${auth.access}`,
           },
         })
         .then((response) => {

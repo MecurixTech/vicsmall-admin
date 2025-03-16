@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -12,6 +13,14 @@ type Order = {
 };
 
 export default function OrdersPage() {
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
+
+  if (!auth.access) {
+    redirect("/login");
+  }
+
   const [orders, setOrders] = useState([]);
 
   const statusStyles = {
@@ -37,7 +46,7 @@ export default function OrdersPage() {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/admin-orders`, {
           headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth") || "{}").access}`,
+            Authorization: `Bearer ${auth.access}`,
           },
         })
         .then((res) => {
