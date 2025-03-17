@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
   return (
     <form
       onSubmit={(e) => handleSubmit(e)}
-      className="m-8 rounded-lg bg-white p-12 shadow-lg"
+      className="m-8 mx-auto w-[95%] rounded-lg bg-white p-12 shadow-lg sm:w-3/5 lg:w-2/5"
     >
       <h1 className="mb-8 text-center text-3xl">Welcome back!</h1>
 
