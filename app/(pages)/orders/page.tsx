@@ -102,7 +102,7 @@ export default function OrdersPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">7k</p>
+              <p className="text-2xl font-bold text-gray-700">0</p>
               <p className="text-sm text-gray-500">ALL ORDERS</p>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function OrdersPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">200</p>
+              <p className="text-2xl font-bold text-gray-700">0</p>
               <p className="text-sm text-gray-500">PENDING</p>
             </div>
           </div>
@@ -165,7 +165,7 @@ export default function OrdersPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">1k</p>
+              <p className="text-2xl font-bold text-gray-700">0</p>
               <p className="text-sm text-gray-500">COMPLETED</p>
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function OrdersPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">250</p>
+              <p className="text-2xl font-bold text-gray-700">0</p>
               <p className="text-sm text-gray-500">PROGRESS</p>
             </div>
           </div>
