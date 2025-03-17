@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";

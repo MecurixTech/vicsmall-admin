@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import UserStats from "../components/userstats";
 import NetSalesChart from "../components/netsales";
 import SalesPerformance from "../components/salesperformance";
