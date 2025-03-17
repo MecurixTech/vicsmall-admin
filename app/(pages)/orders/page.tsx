@@ -17,9 +17,11 @@ export default function OrdersPage() {
     typeof window !== "undefined" &&
     JSON.parse(localStorage.getItem("auth") || "{}");
 
-  if (!auth.access) {
-    redirect("/login");
-  }
+  useEffect(() => {
+    if (!auth.access) {
+      redirect("/login");
+    }
+  }, [auth]);
 
   const [orders, setOrders] = useState([]);
 

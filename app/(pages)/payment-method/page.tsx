@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -29,12 +29,15 @@ interface Currency {
 }
 
 export default function Page() {
-  const auth = typeof window !== "undefined" &&
-  JSON.parse(localStorage.getItem("auth") || "{}")
+  const auth =
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("auth") || "{}");
 
-  if (!auth.access) {
-    redirect("/login");
-  }
+  useEffect(() => {
+    if (!auth.access) {
+      redirect("/login");
+    }
+  }, [auth]);
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
     {

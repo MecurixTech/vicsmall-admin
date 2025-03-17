@@ -41,9 +41,11 @@ export default function Page() {
     typeof window !== "undefined" &&
     JSON.parse(localStorage.getItem("auth") || "{}");
 
-  if (!auth.access) {
-    redirect("/login");
-  }
+  useEffect(() => {
+    if (!auth.access) {
+      redirect("/login");
+    }
+  }, [auth]);
 
   const [shippingClasses, setShippingClasses] = useState<ShippingClass[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
