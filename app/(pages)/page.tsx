@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import UserStats from "../components/userstats";
 import NetSalesChart from "../components/netsales";
 import SalesPerformance from "../components/salesperformance";
@@ -8,33 +8,19 @@ import SalesChart from "../components/salescategory";
 import TopProducts from "../components/topproducts";
 import BrandsChart from "../components/brandscategory";
 import TrendingCard from "../components/trendingproducts";
-import axios from "axios";
 import { redirect } from "next/navigation";
 
 const Home = () => {
-  const [auth, setAuth] = useState(
+  const auth =
     typeof window !== "undefined" &&
-      JSON.parse(localStorage.getItem("auth") || "{}"),
-  );
+    JSON.parse(localStorage.getItem("auth") || "{}");
 
-  if (!auth.access) {
-    redirect("/login");
-  }
-
-  // Refresh the access token whenever user opens website
-  // A tacky solution, but it works as long as the user does
-  // not stay too long without visiting the website
   useEffect(() => {
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/token/refresh`, {
-        refresh: auth.refresh,
-      })
-      .then((res) => {
-        console.log(res);
-        setAuth({ ...auth, access: res.data.access });
-      })
-      .catch((error) => console.log("An error occurred: " + error));
+    if (!auth.access) {
+      redirect("/login");
+    }
   }, [auth]);
+
   return (
     <>
       <h1 className="mb-4 hidden text-3xl font-bold text-gray-800 md:block">
