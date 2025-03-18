@@ -35,3 +35,19 @@ export type Product = {
   date: string;
   quantity: string;
 };
+
+export type Invoice = {
+  order_id: string;
+  customer_email: string;
+  amount: string;
+  status: string;
+  created_at: string;
+  items?: [
+    {
+      id: 0;
+      product_name: string;
+      quantity: number;
+      price: string;
+    },
+  ];
+};

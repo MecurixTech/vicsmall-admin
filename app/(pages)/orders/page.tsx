@@ -102,7 +102,9 @@ export default function OrdersPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">0</p>
+              <p className="text-2xl font-bold text-gray-700">
+                {orders.length}
+              </p>
               <p className="text-sm text-gray-500">ALL ORDERS</p>
             </div>
           </div>
@@ -133,7 +135,13 @@ export default function OrdersPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">0</p>
+              <p className="text-2xl font-bold text-gray-700">
+                {
+                  orders.filter(
+                    (order: Order) => order.status.toLowerCase() === "pending",
+                  ).length
+                }
+              </p>
               <p className="text-sm text-gray-500">PENDING</p>
             </div>
           </div>
@@ -165,7 +173,14 @@ export default function OrdersPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">0</p>
+              <p className="text-2xl font-bold text-gray-700">
+                {
+                  orders.filter(
+                    (order: Order) =>
+                      order.status.toLowerCase() === "completed",
+                  ).length
+                }
+              </p>
               <p className="text-sm text-gray-500">COMPLETED</p>
             </div>
           </div>
@@ -179,25 +194,43 @@ export default function OrdersPage() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  d="M10 20.7771C9.12989 20.5789 8.29407 20.2523 7.52002 19.8081M14 3.22314C15.9882 3.67722 17.7633 4.79284 19.0347 6.38735C20.3061 7.98187 20.9985 9.9608 20.9985 12.0001C20.9985 14.0395 20.3061 16.0184 19.0347 17.6129C17.7633 19.2075 15.9882 20.3231 14 20.7771M4.57902 17.0931C4.03412 16.3003 3.61986 15.4252 3.35202 14.5011M3.12402 10.5001C3.28402 9.55014 3.59202 8.65014 4.02402 7.82514L4.19302 7.52014M6.90702 4.57914C7.84322 3.93602 8.8927 3.47592 10 3.22314"
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
                   stroke="#040458"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
                 />
-                <path
-                  d="M9 12L11 14L15 10"
+                <line
+                  x1="8"
+                  y1="8"
+                  x2="16"
+                  y2="16"
                   stroke="#040458"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                <line
+                  x1="8"
+                  y1="16"
+                  x2="16"
+                  y2="8"
+                  stroke="#040458"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                 />
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-700">0</p>
-              <p className="text-sm text-gray-500">PROGRESS</p>
+              <p className="text-2xl font-bold text-gray-700">
+                {
+                  orders.filter(
+                    (order: Order) =>
+                      order.status.toLowerCase() === "cancelled",
+                  ).length
+                }
+              </p>
+              <p className="text-sm text-gray-500">CANCELLED</p>
             </div>
           </div>
         </div>
@@ -215,39 +248,6 @@ export default function OrdersPage() {
           >
             ALL ORDERS [{orders.length}]
           </div>
-
-          {/* <div
-            className={`cursor-pointer rounded px-3 py-1 text-sm ${
-              filters.delivered
-                ? "bg-green-100 text-green-800"
-                : "bg-gray-100 text-gray-700"
-            }`}
-            onClick={() => handleFilterChange("delivered")}
-          >
-            DELIVERED [120]
-          </div>
-
-          <div
-            className={`cursor-pointer rounded px-3 py-1 text-sm ${
-              filters.pickup
-                ? "bg-orange-100 text-orange-800"
-                : "bg-gray-100 text-gray-700"
-            }`}
-            onClick={() => handleFilterChange("pickup")}
-          >
-            PICKUP [80]
-          </div>
-
-          <div
-            className={`cursor-pointer rounded px-3 py-1 text-sm ${
-              filters.canceled
-                ? "bg-red-100 text-red-800"
-                : "bg-gray-100 text-gray-700"
-            }`}
-            onClick={() => handleFilterChange("canceled")}
-          >
-            CANCELED [34]
-          </div> */}
         </div>
       </div>
 
