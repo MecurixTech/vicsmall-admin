@@ -1,5 +1,5 @@
 "use client";
-import { Search, Edit } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
 import QrCode from "@mui/icons-material/QrCode";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,11 @@ import axios from "axios";
 import { redirect } from "next/navigation";
 import { Invoice } from "@/app/data/dummyTypes";
 
-export default function Page({ params }: { params: { invoiceId: string } }) {
+export default function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const auth =
     typeof window !== "undefined" &&
     JSON.parse(localStorage.getItem("auth") || "{}");
@@ -22,40 +26,52 @@ export default function Page({ params }: { params: { invoiceId: string } }) {
     }
   }, [auth]);
 
+  const [invoiceId, setInvoiceId] = useState("");
   const [invoice, setInvoice] = useState<Invoice>();
 
   useEffect(() => {
-    const loadingInvoice = toast.loading("Loading invoice...");
-    console.log("InvoiceId: " + params.invoiceId);
+    const handleSetInvoiceId = async () => {
+      const { slug } = await params;
+      setInvoiceId(slug);
+    };
 
-    axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/invoice/admin-invoices/${params.invoiceId}`,
-        {
-          headers: { Authorization: `Bearer ${auth.access}` },
-        },
-      )
-      .then((res) => {
-        console.log(res);
-        toast.dismiss(loadingInvoice);
-        if (res.status === 200) {
-          setInvoice(res.data.Data);
-          toast.success(res.data.Message);
-        } else {
-          toast.error(res.data.Message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred!");
-      })
-      .then(() => toast.dismiss(loadingInvoice))
-      .finally(() => toast.dismiss(loadingInvoice));
+    handleSetInvoiceId();
   }, []);
+
+  useEffect(() => {
+    if (invoiceId !== "") {
+      const loadingInvoice = toast.loading("Loading invoice...");
+
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/invoice/admin-invoices/${invoiceId}`,
+          {
+            headers: { Authorization: `Bearer ${auth.access}` },
+          },
+        )
+        .then((res) => {
+          console.log(res);
+          toast.dismiss(loadingInvoice);
+          if (res.status === 200) {
+            setInvoice(res.data.Data);
+            toast.success(res.data.Message);
+          } else {
+            toast.error(res.data.Message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("An error occurred!");
+        })
+        .then(() => toast.dismiss(loadingInvoice))
+        .finally(() => toast.dismiss(loadingInvoice));
+    }
+  }, [invoiceId]);
+
   return (
     <>
       <h1 className="mb-4 hidden text-3xl font-bold text-gray-800 md:block">
-        Invoice - {params.invoiceId}
+        Invoice - {invoiceId}
       </h1>
       {/* Search bar */}
       <div className="mb-6 flex items-center justify-between gap-4 px-4">
@@ -80,7 +96,7 @@ export default function Page({ params }: { params: { invoiceId: string } }) {
           <div className="flex justify-between rounded-2xl bg-[#FF7A45] p-6 text-white">
             <div>
               <p className="mb-1 text-sm">Invoice ID</p>
-              <p className="mb-4">{params.invoiceId}</p>
+              <p className="mb-4">{invoiceId}</p>
               <p className="text-sm">
                 Issue Date: {new Date(invoice?.created_at || "").toDateString()}
               </p>
@@ -98,7 +114,7 @@ export default function Page({ params }: { params: { invoiceId: string } }) {
 
           {/* Item Details */}
           {invoice && (invoice.items?.length ?? 0) > 0 ? (
-            <div className="rounded-lg border">
+            <div className="w-full overflow-x-scroll rounded-lg border">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
@@ -124,10 +140,10 @@ export default function Page({ params }: { params: { invoiceId: string } }) {
                           <span>Fancy Bikini</span>
                         </div>
                       </td>
-                      <td className="p-4">$100</td>
+                      <td className="p-4">{item.price}</td>
                       <td className="p-4">{item.quantity}</td>
                       <td className="p-4">
-                        {item.quantity} * {item.price}
+                        {item.quantity * Number(item.price)}
                       </td>
                     </tr>
                   ))}
