@@ -59,3 +59,29 @@ export type Category = {
   created_at: string;
   updated_at: string;
 };
+
+type DailySale = {
+  date: string;
+  total_sales: number;
+};
+
+type SaleByCategory = {
+  category_name: string;
+  total_sales: number;
+};
+
+type TopProduct = {
+  product_name: string;
+  total_sales: number;
+};
+
+export type Dashboard = {
+  total_orders: number;
+  total_revenue: number;
+  sales_by_category: SaleByCategory[];
+  top_products: TopProduct[];
+  daily_sales: DailySale[];
+  total_products: number;
+  total_shops: number;
+  visitor_count: number;
+};
