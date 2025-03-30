@@ -8,6 +8,7 @@ import {
   LocalShipping,
   Reviews,
   Wallet,
+  CategoryOutlined,
 } from "@mui/icons-material";
 
 export const sidebarLinks = [
@@ -25,42 +26,48 @@ export const sidebarLinks = [
   },
   {
     id: 2,
+    label: "Categories",
+    href: "/categories",
+    icon: CategoryOutlined,
+  },
+  {
+    id: 3,
     label: "Orders",
     href: "/orders",
     icon: ShoppingBagOutlined,
   },
   {
-    id: 3,
+    id: 4,
     label: "Vendors",
     href: "/vendors",
     icon: Storefront,
   },
   {
-    id: 4,
+    id: 5,
     label: "Admins",
     href: "/admin",
     icon: SupervisorAccount,
   },
   {
-    id: 5,
+    id: 6,
     label: "Shipping",
     href: "/shipping-zone",
     icon: LocalShipping,
   },
   {
-    id: 6,
+    id: 7,
     label: "Reviews",
     href: "/reviews",
     icon: Reviews,
   },
   {
-    id: 7,
+    id: 8,
     label: "Payment Method",
     href: "/payment-method",
     icon: Wallet,
   },
   {
-    id: 8,
+    id: 9,
     label: "Profile",
     href: "/profile",
     icon: PersonOutlined,

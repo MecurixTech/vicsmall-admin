@@ -51,3 +51,11 @@ export type Invoice = {
     },
   ];
 };
+
+export type Category = {
+  category_id: string;
+  name: string;
+  slug: string;
+  created_at: string;
+  updated_at: string;
+};
