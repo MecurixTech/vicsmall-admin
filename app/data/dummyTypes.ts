@@ -85,3 +85,25 @@ export type Dashboard = {
   total_shops: number;
   visitor_count: number;
 };
+
+export type Vendor = {
+  id: string;
+  email: string;
+  full_name: string;
+  country_code: string;
+  phone_number: string;
+  is_vendor: boolean;
+  is_active: boolean;
+  is_deleted: boolean;
+  shop: {
+    shop_id: string;
+    shop_name: string;
+    products_preOrder: boolean;
+    product_arrival_time: number;
+    shop_email: string;
+    part_payment: boolean;
+    shop_state: string;
+  } | null;
+  status: string;
+  date: string;
+};

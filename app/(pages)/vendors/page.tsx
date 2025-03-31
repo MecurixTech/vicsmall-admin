@@ -13,22 +13,7 @@ import Filters from "../../components/products/filters";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
-
-type VendorStatus = "Active" | "Deactivated" | "Offline";
-
-type Vendor = {
-  id: string;
-  email: string;
-  full_name: string;
-  country_code: string;
-  phone_number: string;
-  is_vendor: boolean;
-  is_active: boolean;
-  is_deleted: boolean;
-  shop?: string;
-  status: VendorStatus;
-  date: Date;
-};
+import { Vendor } from "@/app/data/dummyTypes";
 
 const VendorsPage = () => {
   const auth =
@@ -94,7 +79,8 @@ const VendorsPage = () => {
           console.log(error);
           toast.dismiss(loadingVendors);
           toast.error("An error occurred!");
-        });
+        })
+        .finally(() => toast.dismiss(loadingVendors));
     }
   }, [auth.access]);
 
@@ -200,14 +186,7 @@ const VendorsPage = () => {
                           className="h-12 w-12 rounded-lg object-cover"
                         />
                       </td>
-                      <td>
-                        <Link
-                          href={`products/${vendor.id}`}
-                          className="hover:underline"
-                        >
-                          {vendor.full_name}
-                        </Link>
-                      </td>
+                      <td>{vendor.full_name}</td>
                       <td>
                         <span
                           className={`${
@@ -244,8 +223,7 @@ const VendorsPage = () => {
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {vendors.map((vendor: Vendor) => (
-                <Link
-                  href={`products/${vendor.id}`}
+                <div
                   key={vendor.id}
                   className="relative overflow-hidden rounded-xl bg-white"
                 >
@@ -271,7 +249,7 @@ const VendorsPage = () => {
                       <span>{new Date(vendor.date).toDateString()}</span>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}

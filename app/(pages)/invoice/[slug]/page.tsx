@@ -63,7 +63,6 @@ export default function Page({
           console.log(error);
           toast.error("An error occurred!");
         })
-        .then(() => toast.dismiss(loadingInvoice))
         .finally(() => toast.dismiss(loadingInvoice));
     }
   }, [invoiceId]);
