@@ -8,7 +8,6 @@ import {
   CloseOutlined,
   CheckCircleOutlineOutlined,
 } from "@mui/icons-material";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { products } from "../../data/dummyData";
 import Image from "next/image";
@@ -292,17 +291,7 @@ const Products = () => {
                             className="h-12 w-12 rounded-lg object-cover"
                           />
                         </td>
-                        <td>
-                          <Link
-                            href={{
-                              pathname: `products/${product.product_id}`,
-                              query: { product: JSON.stringify(product) },
-                            }}
-                            className="hover:underline"
-                          >
-                            {product.product_name}
-                          </Link>
-                        </td>
+                        <td>{product.product_name}</td>
                         <td>{product.product_sale_price}</td>
                         <td>
                           <span
@@ -358,14 +347,7 @@ const Products = () => {
                             className="h-12 w-12 rounded-lg object-cover"
                           />
                         </td>
-                        <td>
-                          <Link
-                            href={`products/${product.product_id}`}
-                            className="hover:underline"
-                          >
-                            {product.product_name}
-                          </Link>
-                        </td>
+                        <td>{product.product_name}</td>
                         <td>{product.product_sale_price}</td>
                         <td>
                           <span
@@ -402,8 +384,7 @@ const Products = () => {
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {products.map((product: Product) => (
-                <Link
-                  href={`products/${product.product_id}`}
+                <div
                   key={product.product_id}
                   className="relative overflow-hidden rounded-xl bg-white"
                 >
@@ -435,7 +416,7 @@ const Products = () => {
                       </span>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}
