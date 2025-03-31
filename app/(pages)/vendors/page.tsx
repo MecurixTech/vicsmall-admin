@@ -6,7 +6,6 @@ import {
   SearchOutlined,
   WindowOutlined,
 } from "@mui/icons-material";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Filters from "../../components/products/filters";
