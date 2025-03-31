@@ -79,9 +79,8 @@ const Products = () => {
           toast.dismiss(accepting);
           console.log(res);
           if (res.status === 200) {
-            toast.success(
-              res.data.Message + ". Reload the page to see your changes",
-            );
+            toast.success(res.data.Message);
+            window.location.reload();
           } else {
             toast.error(res.data.Message);
           }
@@ -114,9 +113,8 @@ const Products = () => {
           toast.dismiss(rejecting);
           console.log(res);
           if (res.status === 200) {
-            toast.success(
-              res.data.Message + ". Reload the page to see your changes",
-            );
+            toast.success(res.data.Message);
+            window.location.reload();
           } else {
             toast.error(res.data.Message);
           }
@@ -296,7 +294,10 @@ const Products = () => {
                         </td>
                         <td>
                           <Link
-                            href={`products/${product.product_id}`}
+                            href={{
+                              pathname: `products/${product.product_id}`,
+                              query: { product: JSON.stringify(product) },
+                            }}
                             className="hover:underline"
                           >
                             {product.product_name}
